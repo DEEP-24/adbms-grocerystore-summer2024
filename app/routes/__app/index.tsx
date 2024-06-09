@@ -142,7 +142,7 @@ export default function Dashboard() {
   }, [fetcher.data, fetcher.type]);
 
   return (
-    <div className="flex h-[80vh] flex-col gap-4 overflow-hidden p-4">
+    <div className="flex h-full flex-col gap-4 overflow-hidden">
       <div className="flex w-full items-center justify-between border-b border-b-gray-500 pb-4">
         <div className="flex items-center gap-4">
           <Button
@@ -202,7 +202,7 @@ export default function Dashboard() {
         opened={isSearchModalOpen}
         onClose={handleOpenSearchModal.close}
         title="Search for a product"
-        centered
+        centered={true}
         overlayBlur={15}
         overlayOpacity={0.5}
       >
@@ -212,8 +212,8 @@ export default function Dashboard() {
             name="barcodeId"
             value={query}
             onChange={(event) => setQuery(event.currentTarget.value)}
-            required
-            autoFocus
+            required={true}
+            autoFocus={true}
           />
 
           {error && (
@@ -223,7 +223,7 @@ export default function Dashboard() {
           <Button
             type="submit"
             variant="filled"
-            fullWidth
+            fullWidth={true}
             onClick={() => {
               const product = products.find(
                 (product) => product.barcodeId === query,
@@ -246,7 +246,7 @@ export default function Dashboard() {
         opened={isPaymentModalOpen}
         onClose={closePaymentModal}
         title="Payment"
-        centered
+        centered={true}
         overlayBlur={1}
         overlayOpacity={0.7}
       >
@@ -308,8 +308,16 @@ export default function Dashboard() {
             </h2>
           </div>
 
-          <TextInput name="customerName" label="Customer name" required />
-          <TextInput name="customerPhone" label="Customer phone" required />
+          <TextInput
+            name="customerName"
+            label="Customer name"
+            required={true}
+          />
+          <TextInput
+            name="customerPhone"
+            label="Customer phone"
+            required={true}
+          />
 
           <Select
             label="Payment method"
@@ -326,7 +334,7 @@ export default function Dashboard() {
               <Input.Wrapper
                 id={id}
                 label="Credit card number"
-                required
+                required={true}
                 error={errors.cardNumber}
               >
                 <Input
@@ -342,13 +350,13 @@ export default function Dashboard() {
 
               <div className="flex items-center gap-4">
                 <Input.Wrapper
-                  id={id + "cvv"}
+                  id={`${id}cvv`}
                   label="CVV"
-                  required
+                  required={true}
                   error={errors.cardCvv}
                 >
                   <Input
-                    id={id + "cvv"}
+                    id={`${id}cvv`}
                     name="cvv"
                     component={ReactInputMask}
                     mask="999"
@@ -366,13 +374,13 @@ export default function Dashboard() {
                   clearable={false}
                   placeholder="MM/YYYY"
                   labelFormat="MM/YYYY"
-                  required
+                  required={true}
                   value={cardExpiry}
                   minDate={new Date()}
                   onChange={(e) => setCardExpiry(e)}
                   error={errors.cardExpiry}
                   initialLevel="year"
-                  hideOutsideDates
+                  hideOutsideDates={true}
                 />
               </div>
             </>

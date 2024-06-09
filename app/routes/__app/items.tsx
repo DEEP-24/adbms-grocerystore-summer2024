@@ -51,7 +51,7 @@ export default function Items() {
                       to={`/product/${product.slug}`}
                       component={Link}
                       variant="light"
-                      fullWidth
+                      fullWidth={true}
                       mt="md"
                     >
                       View

@@ -1,5 +1,9 @@
 import { db } from "./prisma.server";
 
 export function getAllProducts() {
-  return db.product.findMany({});
+  return db.product.findMany({
+    include: {
+      category: true,
+    },
+  });
 }
