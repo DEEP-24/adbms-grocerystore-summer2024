@@ -16,7 +16,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { getAllProducts } from "~/lib/product.server";
+import {
+  getAllCategoriesWithProducts,
+  getAllProducts,
+} from "~/lib/product.server";
 import { isAdmin, isCustomer, requireUserId } from "~/lib/session.server";
 import { cn } from "~/lib/utils";
 import { useOptionalUser } from "~/utils/hooks";
@@ -30,10 +33,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 
   const products = await getAllProducts();
-  // geat all the unique categories
-  const categories = Array.from(
-    new Set(products.flatMap((product) => product.category)),
-  );
+  const categories = await getAllCategoriesWithProducts();
 
   return json({
     products,

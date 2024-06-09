@@ -7,3 +7,15 @@ export function getAllProducts() {
     },
   });
 }
+
+export function getAllCategoriesWithProducts() {
+  return db.category.findMany({
+    include: {
+      products: true,
+    },
+  });
+}
+
+export function getAllCategories() {
+  return db.category.findMany();
+}
