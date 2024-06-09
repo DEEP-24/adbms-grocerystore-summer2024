@@ -1,0 +1,46 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "files": {
+    "ignore": ["node_modules", "module", "doc"]
+  },
+  "linter": {
+    "enabled": true,
+    "ignore": ["tests"],
+    "rules": {
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useButtonType": "off"
+      },
+      "correctness": {
+        "noUndeclaredVariables": "warn",
+        "noUnusedVariables": "warn",
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "error",
+        "noUnusedImports": "warn",
+        "noUnusedLabels": "warn"
+      },
+      "recommended": true,
+      "style": {
+        "noImplicitBoolean": "warn",
+        "noNegationElse": "error",
+        "noParameterAssign": "off",
+        "noParameterProperties": "off",
+        "noShoutyConstants": "warn",
+        "useBlockStatements": "error",
+        "noNonNullAssertion": "off"
+      },
+      "suspicious": {
+        "noEmptyBlockStatements": "error",
+        "noArrayIndexKey": "off"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space"
+  }
+}
