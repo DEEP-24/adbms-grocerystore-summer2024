@@ -43,15 +43,16 @@ model Product {
   price        Float
   orders       ProductOrder[]
 
-  category   Category? @relation(fields: [categoryId], references: [id])
-  categoryId String?   @db.ObjectId
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String   @db.ObjectId
 
   @@map("product")
 }
 
 model Category {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  name     String    @unique
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+
   products Product[]
 
   @@map("category")
