@@ -1,24 +1,28 @@
 import { Anchor, Button } from "@mantine/core";
 import { Link } from "@remix-run/react";
-import { TailwindContainer } from "~/components/TailwindContainer";
 import { useAppData } from "~/utils/hooks";
 
 export default function Items() {
-  const { products } = useAppData();
+  const { products, categories } = useAppData();
+
+  console.log("Categories", categories);
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <div className="bg-[rgb(129, 135, 80)]">
-        <TailwindContainer>
-          <div className="py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-extrabold tracking-tight text-gray-900">
-                Products
-              </h2>
-            </div>
+    <div className="flex flex-col gap-4">
+      <div className="px-4 sm:px-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
+            Products
+          </h2>
+        </div>
 
+        {categories.map((category) => (
+          <div key={category.id}>
+            <h3 className="mt-3 text-lg font-semibold text-gray-900 bg-gray-100 w-full rounded-xl text-center p-2">
+              {category.name}
+            </h3>
             <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-10 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
-              {products.map((product) => {
+              {category.products.map((product) => {
                 return (
                   <div key={product.id} className="mx-auto sm:mx-[unset]">
                     <div className="h-48 overflow-hidden rounded-md bg-gray-200 shadow lg:h-64">
@@ -61,7 +65,7 @@ export default function Items() {
               })}
             </div>
           </div>
-        </TailwindContainer>
+        ))}
       </div>
     </div>
   );
