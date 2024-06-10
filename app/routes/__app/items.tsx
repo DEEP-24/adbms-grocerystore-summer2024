@@ -1,11 +1,9 @@
-import { Anchor, Button } from "@mantine/core";
+import { Anchor } from "@mantine/core";
 import { Link } from "@remix-run/react";
 import { useAppData } from "~/utils/hooks";
 
 export default function Items() {
-  const { products, categories } = useAppData();
-
-  console.log("Categories", categories);
+  const { categories } = useAppData();
 
   return (
     <div className="flex flex-col gap-4">
@@ -24,43 +22,36 @@ export default function Items() {
             <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-10 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
               {category.products.map((product) => {
                 return (
-                  <div key={product.id} className="mx-auto sm:mx-[unset]">
-                    <div className="h-48 overflow-hidden rounded-md bg-gray-200 shadow lg:h-64">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="h-full w-full object-cover object-center"
-                      />
+                  <Link to={`/product/${product.slug}`} key={product.id}>
+                    <div className="mx-auto sm:mx-[unset] border-2 p-2 rounded-xl shadow-lg">
+                      <div className="h-48 overflow-hidden rounded-xl bg-gray-200 shadow lg:h-64">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="h-full w-full object-cover object-center"
+                        />
+                      </div>
+
+                      <p className="mt-1 text-sm font-medium text-gray-900 bg-slate-100 rounded-xl text-center p-1">
+                        Barcode ID: {product.barcodeId}
+                      </p>
+
+                      <div className="flex justify-between mt-1 p-2">
+                        <h3 className="text-sm text-gray-700">
+                          <Anchor
+                            to={`/product/${product.slug}`}
+                            prefetch="intent"
+                            component={Link}
+                          >
+                            {product.name}
+                          </Anchor>
+                        </h3>
+                        <p className="text-sm font-medium text-gray-900">
+                          Price: ${product.price}
+                        </p>
+                      </div>
                     </div>
-
-                    <h3 className="mt-4 text-sm text-gray-700">
-                      <Anchor
-                        to={`/product/${product.slug}`}
-                        prefetch="intent"
-                        component={Link}
-                      >
-                        {product.name}
-                      </Anchor>
-                    </h3>
-
-                    <p className="mt-1 text-sm font-medium text-gray-900">
-                      Price: ${product.price}
-                    </p>
-
-                    <p className="mt-1 text-sm font-medium text-gray-900">
-                      Barcode ID: {product.barcodeId}
-                    </p>
-
-                    <Button
-                      to={`/product/${product.slug}`}
-                      component={Link}
-                      variant="light"
-                      fullWidth={true}
-                      mt="md"
-                    >
-                      View
-                    </Button>
-                  </div>
+                  </Link>
                 );
               })}
             </div>

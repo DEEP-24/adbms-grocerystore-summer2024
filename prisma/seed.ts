@@ -108,13 +108,35 @@ const products = [
   },
   {
     name: "Carrots (500gm)",
-    barcodeId: "6789",
+    barcodeId: "0382",
     description:
       "The carrot is a root vegetable, typically orange in color, though purple, black, red, white, and yellow cultivars exist. Carrots are a domesticated form of the wild carrot, Daucus carota, native to Europe and Southwestern Asia.",
     image:
       "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2Fycm90c3xlbnwwfHwwfHx8MA%3D%3D",
     quantity: 10,
     price: 9.99,
+    category: ["Vegetables"],
+  },
+  {
+    name: "Potatoes (1kg)",
+    barcodeId: "738293829",
+    description:
+      "The potato is a root vegetable native to the Americas, a starchy tuber of the plant Solanum tuberosum, and the plant itself, a perennial in the family Solanaceae.",
+    image:
+      "https://images.unsplash.com/photo-1508313880080-c4bef0730395?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cG90YXRvZXN8ZW58MHx8MHx8fDA%3D",
+    quantity: 10,
+    price: 5.99,
+    category: ["Vegetables"],
+  },
+  {
+    name: "Tomatoes (500gm)",
+    barcodeId: "12712182",
+    description:
+      "The tomato is the edible berry of the plant Solanum lycopersicum, commonly known as a tomato plant. The species originated in western South America and Central America.",
+    image:
+      "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8dG9tYXRvZXN8ZW58MHx8MHx8fDA%3D",
+    quantity: 10,
+    price: 6.99,
     category: ["Vegetables"],
   },
   {
