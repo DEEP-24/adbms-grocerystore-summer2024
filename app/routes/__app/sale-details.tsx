@@ -14,7 +14,6 @@ import clsx from "clsx";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import * as React from "react";
-import { TailwindContainer } from "~/components/TailwindContainer";
 import { useCart } from "~/context/CartContext";
 import { cancelOrder, getOrders } from "~/lib/order.server";
 import { db } from "~/lib/prisma.server";
@@ -157,49 +156,43 @@ export default function OrderHistory() {
 
   return (
     <>
-      <div className="flex flex-col gap-4 p-4">
-        <div className="bg-[rgb(129, 135, 80)]">
-          <TailwindContainer>
-            <div className="py-16 px-4 sm:py-20 sm:px-4">
-              <div className="max-w-xl">
-                <div className="mb-12">
-                  <Button
-                    leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
-                    variant="white"
-                    size="md"
-                    component={Link}
-                    to=".."
-                    pl={0}
-                  >
-                    Back
-                  </Button>
-                </div>
+      <div className="flex flex-col gap-4">
+        <div className="max-w-xl">
+          <div className="mb-12">
+            <Button
+              leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
+              variant="white"
+              size="md"
+              component={Link}
+              to=".."
+              pl={0}
+            >
+              Back
+            </Button>
+          </div>
 
-                <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
-                  Sale Details
-                </h1>
-                <p className="mt-2 text-sm text-gray-500">
-                  Check the status of recent orders.
-                </p>
-              </div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
+            Sale Details
+          </h1>
+          <p className="mt-2 text-sm text-gray-500">
+            Check the status of recent orders.
+          </p>
+        </div>
 
-              <div className="mt-16">
-                <h2 className="sr-only">Recent orders</h2>
+        <div className="mt-16">
+          <h2 className="sr-only">Recent orders</h2>
 
-                <div className="flex flex-col gap-20">
-                  {orders.length > 0 ? (
-                    <>
-                      {orders.map((order) => (
-                        <Order order={order} key={order.id} />
-                      ))}
-                    </>
-                  ) : (
-                    <EmptyState />
-                  )}
-                </div>
-              </div>
-            </div>
-          </TailwindContainer>
+          <div className="flex flex-col gap-20">
+            {orders.length > 0 ? (
+              <>
+                {orders.map((order) => (
+                  <Order order={order} key={order.id} />
+                ))}
+              </>
+            ) : (
+              <EmptyState />
+            )}
+          </div>
         </div>
       </div>
     </>
@@ -350,7 +343,7 @@ function Order({ order }: { order: LoaderData["orders"][number] }) {
             >
               Status
             </th>
-            <th scope="col" className="w-0 py-3 text-right font-normal"></th>
+            <th scope="col" className="w-0 py-3 text-right font-normal" />
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 border-b border-gray-200 text-sm sm:border-t">

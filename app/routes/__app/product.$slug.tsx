@@ -35,99 +35,92 @@ export default function Item() {
 
   return (
     <>
-      <div className="flex flex-col gap-4 p-4">
-        <div className="bg-[rgb(129, 135, 80)]">
-          <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-12 lg:px-8">
-            <div className="sm:mt-10 lg:row-span-2 lg:mt-0 lg:self-center">
-              <div className="mb-12">
-                <Button
-                  leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
-                  variant="white"
-                  size="md"
-                  component={Link}
-                  to=".."
-                  pl={0}
-                >
-                  Back
-                </Button>
-              </div>
-              <div className="overflow-hidden rounded-lg shadow">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="aspect-square w-full object-cover"
-                />
-              </div>
-            </div>
-
-            <div className="lg:col-start-2 lg:max-w-lg lg:self-end">
-              <div className="mt-4">
-                <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-                  {product.name}
-                </h1>
-              </div>
-
-              <section aria-labelledby="information-heading" className="mt-4">
-                <p className="text-lg text-gray-900 sm:text-xl">
-                  ${totalPrice}
-                </p>
-
-                <div className="mt-4 space-y-6">
-                  <p className="text-base text-gray-500">
-                    {product.description}
-                  </p>
-                </div>
-
-                {!isOutOfStock ? (
-                  <>
-                    <div className="mt-4 space-y-6">
-                      <span>Available Quantity: </span>
-                      <span className="text-base text-gray-500">
-                        {product.quantity}
-                      </span>
-                    </div>
-
-                    <div className="mt-1 space-y-6">
-                      <span>Barcode ID: </span>
-                      <span className="text-base text-gray-500">
-                        {product.barcodeId}
-                      </span>
-                    </div>
-
-                    <NumberInput
-                      mt={12}
-                      required
-                      label="Quantity"
-                      value={quantity}
-                      max={product.quantity}
-                      onChange={(val) => setQuantity(Number(val))}
-                      min={1}
-                      defaultValue={1}
-                    />
-                  </>
-                ) : null}
-              </section>
-            </div>
-
-            {/* Add to cart button */}
-            <div className="mt-6 lg:col-start-2 lg:row-start-2 lg:max-w-lg lg:self-start">
+      <div className="flex flex-col gap-4">
+        <div className="mx-auto max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-12">
+          <div className="sm:mt-10 lg:row-span-2 lg:mt-0 lg:self-center">
+            <div className="mb-12">
               <Button
-                fullWidth
-                mt="2.5rem"
-                disabled={
-                  !quantity || isOutOfStock || quantity > product.quantity
-                }
-                onClick={() =>
-                  addItemToCart({
-                    ...product,
-                    quantity,
-                    basePrice: product.price,
-                  })
-                }
+                leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
+                variant="white"
+                size="md"
+                component={Link}
+                to=".."
+                pl={0}
               >
-                {isOutOfStock ? "Out of stock" : "Add to cart"}
+                Back
               </Button>
             </div>
+            <div className="overflow-hidden rounded-xl shadow-md">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="aspect-square w-full object-cover"
+              />
+            </div>
+          </div>
+
+          <div className="lg:col-start-2 lg:max-w-lg lg:self-end">
+            <div className="mt-4">
+              <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                {product.name}
+              </h1>
+            </div>
+
+            <section aria-labelledby="information-heading" className="mt-4">
+              <p className="text-lg text-gray-900 sm:text-xl">${totalPrice}</p>
+
+              <div className="mt-4 space-y-6">
+                <p className="text-base text-gray-500">{product.description}</p>
+              </div>
+
+              {isOutOfStock ? null : (
+                <>
+                  <div className="mt-4 space-y-6">
+                    <span>Available Quantity: </span>
+                    <span className="text-base text-gray-500">
+                      {product.quantity}
+                    </span>
+                  </div>
+
+                  <div className="mt-1 space-y-6">
+                    <span>Barcode ID: </span>
+                    <span className="text-base text-gray-500">
+                      {product.barcodeId}
+                    </span>
+                  </div>
+
+                  <NumberInput
+                    mt={12}
+                    required={true}
+                    label="Quantity"
+                    value={quantity}
+                    max={product.quantity}
+                    onChange={(val) => setQuantity(Number(val))}
+                    min={1}
+                    defaultValue={1}
+                  />
+                </>
+              )}
+            </section>
+          </div>
+
+          <div className="mt-6 lg:col-start-2 lg:row-start-2 lg:max-w-lg lg:self-start">
+            <Button
+              fullWidth={true}
+              mt="2.5rem"
+              disabled={
+                !quantity || isOutOfStock || quantity > product.quantity
+              }
+              onClick={() =>
+                addItemToCart({
+                  ...product,
+                  quantity,
+                  basePrice: product.price,
+                })
+              }
+            >
+              {isOutOfStock ? "Out of stock" : "Add to cart"}
+            </Button>
           </div>
         </div>
       </div>
