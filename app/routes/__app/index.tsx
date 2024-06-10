@@ -145,6 +145,9 @@ export default function Dashboard() {
     <div className="flex h-full flex-col gap-4 overflow-hidden">
       <div className="flex w-full items-center justify-between border-b border-b-gray-500 pb-4">
         <div className="flex items-center gap-4">
+          <Button variant="outline" component={Link} to="/items">
+            View all items
+          </Button>
           <Button
             variant="filled"
             color="white"
@@ -152,9 +155,6 @@ export default function Dashboard() {
           >
             <MagnifyingGlassIcon className="mr-2 h-4 w-4" aria-hidden="true" />
             <p>Search via barcode</p>
-          </Button>
-          <Button variant="outline" component={Link} to="/items">
-            View all items
           </Button>
         </div>
 
@@ -453,7 +453,7 @@ function EmptyState() {
     <div className="relative block h-full w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
       <ShoppingCartIcon className="mx-auto h-9 w-9 text-gray-500" />
       <span className="mt-4 block text-sm font-medium text-gray-500">
-        Add items to your customers card and they will appear here
+        Add items to your cart and they will appear here
       </span>
     </div>
   );

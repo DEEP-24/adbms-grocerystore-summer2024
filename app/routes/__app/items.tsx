@@ -22,7 +22,11 @@ export default function Items() {
             <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-10 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
               {category.products.map((product) => {
                 return (
-                  <Link to={`/product/${product.slug}`} key={product.id}>
+                  <Link
+                    to={`/product/${product.slug}`}
+                    key={product.id}
+                    className="hover:scale-105 transition-all"
+                  >
                     <div className="mx-auto sm:mx-[unset] border-2 p-2 rounded-xl shadow-lg">
                       <div className="h-48 overflow-hidden rounded-xl bg-gray-200 shadow lg:h-64">
                         <img
