@@ -6,6 +6,7 @@ import { Form, Link, NavLink, Outlet } from "@remix-run/react";
 import {
   CircleUserIcon,
   LayoutListIcon,
+  PackageIcon,
   ShoppingBasketIcon,
 } from "lucide-react";
 import { Footer } from "~/components/Footer";
@@ -72,6 +73,19 @@ export default function AppLayout() {
                 >
                   <LayoutListIcon className="h-4 w-4" />
                   Categories
+                </NavLink>
+                <NavLink
+                  to="/admin/orders"
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-gray-100",
+                      isActive &&
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-gray-300 bg-gray-300",
+                    )
+                  }
+                >
+                  <PackageIcon className="h-4 w-4" />
+                  Orders
                 </NavLink>
               </nav>
             </div>

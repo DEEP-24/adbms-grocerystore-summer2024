@@ -13,11 +13,12 @@ import {
   NumberInput,
   Select,
   TextInput,
+  Textarea,
 } from "@mantine/core";
-import { DatePicker } from "@mantine/dates";
+import { DatePicker, TimeInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
-import { PaymentMethod } from "@prisma/client";
+import { OrderType, PaymentMethod } from "@prisma/client";
 import type { ActionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Link, useFetcher, useNavigate } from "@remix-run/react";
@@ -27,7 +28,7 @@ import type { CartItem } from "~/context/CartContext";
 import { useCart } from "~/context/CartContext";
 import { createOrder } from "~/lib/order.server";
 import { getUserId } from "~/lib/session.server";
-import { useAppData } from "~/utils/hooks";
+import { useAppData, useOptionalUser } from "~/utils/hooks";
 import { formatDateTime, titleCase } from "~/utils/misc";
 import { badRequest } from "~/utils/misc.server";
 
@@ -40,54 +41,59 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
 
   const userId = await getUserId(request);
-  const intent = formData.get("intent")?.toString();
 
-  if (!userId || !intent) {
+  if (!userId) {
     return json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
 
-  switch (intent) {
-    case "place-order": {
-      const stringifiedProducts = formData.get("products[]")?.toString();
-      const amount = formData.get("amount")?.toString();
-      const tax = formData.get("tax")?.toString();
-      const paymentMethod = formData.get("paymentMethod")?.toString();
-      const customerName = formData.get("customerName")?.toString();
-      const customerPhone = formData.get("customerPhone")?.toString();
+  const stringifiedProducts = formData.get("products[]")?.toString();
+  const amount = formData.get("amount")?.toString();
+  const tax = formData.get("tax")?.toString();
+  const paymentMethod = formData.get("paymentMethod")?.toString();
+  const orderType = formData.get("orderType")?.toString();
+  const address = formData.get("address")?.toString();
+  const pickupTime = formData.get("pickupTime")?.toString();
 
-      if (
-        !stringifiedProducts ||
-        !amount ||
-        !paymentMethod ||
-        !customerName ||
-        !customerPhone ||
-        !tax
-      ) {
-        return badRequest<ActionData>({
-          success: false,
-          message: "Invalid request body",
-        });
-      }
-
-      const products = JSON.parse(stringifiedProducts) as Array<CartItem>;
-
-      await createOrder({
-        userId,
-        products,
-        tax: Number(tax),
-        customerName,
-        customerPhone,
-        amount: Number(amount),
-        paymentMethod: paymentMethod as PaymentMethod,
-      });
-
-      return redirect("/sale-details/?success=true");
-    }
+  if (!stringifiedProducts || !amount || !paymentMethod || !tax) {
+    return badRequest<ActionData>({
+      success: false,
+      message: "Invalid request body",
+    });
   }
+
+  if (orderType === OrderType.DELIVERY && !address) {
+    return badRequest<ActionData>({
+      success: false,
+      message: "Address is required for delivery",
+    });
+  }
+
+  if (orderType === OrderType.PICKUP && !pickupTime) {
+    return badRequest<ActionData>({
+      success: false,
+      message: "Pickup time is required for pickup",
+    });
+  }
+
+  const products = JSON.parse(stringifiedProducts) as Array<CartItem>;
+
+  await createOrder({
+    userId,
+    products,
+    tax: Number(tax),
+    amount: Number(amount),
+    paymentMethod: paymentMethod as PaymentMethod,
+    orderType: orderType as OrderType,
+    address: address || "",
+    pickupTime: pickupTime ? new Date(pickupTime) : null,
+  });
+
+  return redirect("/sale-details/?success=true");
 }
 
-export default function Dashboard() {
+export default function Cart() {
   const { products } = useAppData();
+  const { user } = useOptionalUser();
   const navigate = useNavigate();
   const [isSearchModalOpen, handleOpenSearchModal] = useDisclosure(false, {
     onClose: () => {
@@ -100,11 +106,17 @@ export default function Dashboard() {
 
   const { clearCart, itemsInCart, totalPrice, tax } = useCart();
 
+  const [orderType, setOrderType] = React.useState<OrderType>(OrderType.PICKUP);
   const [paymentMethod, setPaymentMethod] = React.useState<PaymentMethod>(
     PaymentMethod.CREDIT_CARD,
   );
+
+  const [address, setAddress] = React.useState(user?.address ?? "");
   const [isPaymentModalOpen, setIsPaymentModalOpen] = React.useState(false);
   const [cardNumber, setCardNumber] = React.useState<string>("");
+  const [pickUpTime, setPickUpTime] = React.useState<Date | null>(
+    new Date(new Date().getTime() + 2 * 60 * 60 * 1000),
+  );
   const [cardExpiry, setCardExpiry] = React.useState<Date | null>(null);
   const [cardCvv, setCardCvv] = React.useState<string>("");
   const [errors, setErrors] = React.useState<{
@@ -123,6 +135,7 @@ export default function Dashboard() {
 
   const isSubmitting = fetcher.state !== "idle";
   const isCashPayment = paymentMethod === PaymentMethod.CASH;
+  const isDelivery = orderType === OrderType.DELIVERY;
 
   React.useEffect(() => {
     if (fetcher.type !== "done") {
@@ -292,7 +305,7 @@ export default function Dashboard() {
             formData.append("products[]", JSON.stringify(itemsInCart));
             formData.append("amount", totalPrice.toString());
             formData.append("tax", tax.toString());
-            formData.append("intent", "place-order");
+            formData.append("orderType", orderType);
             formData.append("paymentMethod", paymentMethod);
 
             fetcher.submit(formData, {
@@ -308,15 +321,15 @@ export default function Dashboard() {
             </h2>
           </div>
 
-          <TextInput
-            name="customerName"
-            label="Customer name"
-            required={true}
-          />
-          <TextInput
-            name="customerPhone"
-            label="Customer phone"
-            required={true}
+          <Select
+            label="Order type"
+            value={orderType}
+            clearable={false}
+            onChange={(e) => setOrderType(e as OrderType)}
+            data={Object.values(OrderType).map((type) => ({
+              label: titleCase(type.replace(/_/g, " ")),
+              value: type,
+            }))}
           />
 
           <Select
@@ -384,6 +397,28 @@ export default function Dashboard() {
                 />
               </div>
             </>
+          )}
+
+          {isDelivery ? (
+            <Textarea
+              label="Delivery address"
+              name="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required={true}
+            />
+          ) : (
+            <div>
+              <TimeInput
+                label="Pickup time"
+                name="pickupTime"
+                clearable={false}
+                format="12"
+                value={pickUpTime}
+                onChange={(e) => setPickUpTime(e)}
+                required={true}
+              />
+            </div>
           )}
 
           <div className="mt-6 flex items-center gap-4 sm:justify-end">
@@ -500,7 +535,7 @@ function ItemRow({ item }: { item: CartItem }) {
         ${itemTotalPrice.toFixed(2)}
       </td>
       <td className="whitespace-nowrap py-6 text-right font-medium">
-        <ActionIcon onClick={() => removeItemFromCart(item.id!)}>
+        <ActionIcon onClick={() => removeItemFromCart(item.id)}>
           <TrashIcon className="h-4 w-4 text-red-500" />
         </ActionIcon>
       </td>

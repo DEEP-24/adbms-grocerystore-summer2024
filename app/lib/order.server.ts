@@ -1,4 +1,10 @@
-import type { Order, Payment, PaymentMethod, User } from "@prisma/client";
+import type {
+  Order,
+  OrderType,
+  Payment,
+  PaymentMethod,
+  User,
+} from "@prisma/client";
 import { OrderStatus } from "@prisma/client";
 import appConfig from "app.config";
 import type { CartItem } from "~/context/CartContext";
@@ -43,28 +49,31 @@ export function createOrder({
   products,
   amount,
   tax,
-  customerName,
-  customerPhone,
+  orderType,
   paymentMethod,
+  address,
+  pickupTime,
 }: {
   userId: User["id"];
   products: Array<CartItem>;
   amount: Payment["amount"];
   tax: Payment["tax"];
-  customerName: Order["customerName"];
-  customerPhone: Order["customerPhone"];
+  orderType: OrderType;
   paymentMethod: PaymentMethod;
+  address: Required<Payment>["address"];
+  pickupTime: Order["pickupTime"];
 }) {
   return db.$transaction(async (tx) => {
     const order = await tx.order.create({
       data: {
         userId,
-        status: OrderStatus.DONE,
-        customerName,
-        customerPhone,
+        type: orderType,
+        status: OrderStatus.ACCEPTED,
+        pickupTime,
         payment: {
           create: {
             paymentMethod,
+            address,
             amount,
             tax,
             user: {
@@ -134,7 +143,7 @@ export async function cancelOrder(orderId: Order["id"]) {
       id: orderId,
     },
     data: {
-      status: OrderStatus.RETURN,
+      status: OrderStatus.CANCELLED,
     },
   });
 
@@ -157,10 +166,7 @@ export async function cancelOrder(orderId: Order["id"]) {
 
       await db.productOrder.update({
         where: {
-          productId_orderId: {
-            productId: p.id,
-            orderId: orderId,
-          },
+          id: p.id,
         },
         data: {
           quantity: {
@@ -169,7 +175,6 @@ export async function cancelOrder(orderId: Order["id"]) {
           amount: {
             set: 0,
           },
-          status: OrderStatus.RETURN,
         },
       });
 
