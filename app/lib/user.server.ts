@@ -11,6 +11,7 @@ export async function getUserById(id: User["id"]) {
       id: true,
       name: true,
       email: true,
+      address: true,
     },
   });
 }

@@ -46,6 +46,7 @@ export function useLocalStorageState<T>({
 }): ReturnType<T> {
   const [value, setValue] = React.useState<T>(defaultValue);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   React.useEffect(() => {
     const localStorageValue = window.localStorage.getItem(key);
 
