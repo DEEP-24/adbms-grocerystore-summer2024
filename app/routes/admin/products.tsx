@@ -186,12 +186,9 @@ export default function ManageProducts() {
       <div className="sm:px-6 lg:px-8 overflow-hidden">
         <div className="sm:flex sm:flex-auto sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">
+            <h1 className="text-3xl font-semibold text-gray-900">
               Manage Products
             </h1>
-            <p className="mt-2 text-sm text-gray-700">
-              A list of all the products currently present in store.
-            </p>
           </div>
           <div>
             <Button
