@@ -1,12 +1,17 @@
-import { ScrollArea } from "@mantine/core";
 import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, NavLink, Outlet } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  NavLink,
+  Outlet,
+  type ShouldReloadFunction,
+} from "@remix-run/react";
 import {
   CircleUserIcon,
   HistoryIcon,
   HomeIcon,
-  ShoppingBagIcon,
+  ShoppingBasketIcon,
 } from "lucide-react";
 import { Footer } from "~/components/Footer";
 import { Button } from "~/components/ui/button";
@@ -80,7 +85,7 @@ export default function AppLayout() {
                   )
                 }
               >
-                <ShoppingBagIcon className="h-4 w-4" />
+                <ShoppingBasketIcon className="h-4 w-4" />
                 Items
               </NavLink>
               <NavLink
@@ -128,14 +133,24 @@ export default function AppLayout() {
           </DropdownMenu>
         </header>
         <div className="flex-1 overflow-y-auto p-5">
-          <ScrollArea>
-            <main>
-              <Outlet />
-            </main>
-          </ScrollArea>
+          <main>
+            <Outlet />
+          </main>
         </div>
         <Footer />
       </div>
     </div>
   );
 }
+
+export const unstable_shouldReload: ShouldReloadFunction = ({
+  submission,
+  prevUrl,
+  url,
+}) => {
+  if (!submission && prevUrl.pathname === url.pathname) {
+    return false;
+  }
+
+  return true;
+};
