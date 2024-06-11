@@ -163,13 +163,35 @@ const products = [
   },
   {
     name: "Yogurt (500gm)",
-    barcodeId: "7654",
+    barcodeId: "2891021",
     description:
       "Yogurt, yoghurt, or yoghourt is a food produced by bacterial fermentation of milk. The bacteria used to make yogurt are known as yogurt cultures. Fermentation of sugars in the milk by these bacteria produces lactic acid, which acts on milk protein to give yogurt its texture and characteristic tart flavor.",
     image:
       "https://images.unsplash.com/photo-1571212515416-fef01fc43637?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8eW9ndXJ0fGVufDB8fDB8fHww",
     quantity: 10,
     price: 4.99,
+    category: ["Dairy"],
+  },
+  {
+    name: "Butter (200gm)",
+    barcodeId: "12198",
+    description:
+      "Butter is a dairy product made from the fat and protein components of milk or cream. It is a semi-solid emulsion at room temperature, consisting of approximately 80% butterfat. It is used at room temperature as a spread, melted as a condiment, and used as an ingredient in baking, sauce making, pan frying, and other cooking procedures.",
+    image:
+      "https://images.unsplash.com/photo-1620567838034-f32ee85818aa?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YnV0dGVyfGVufDB8fDB8fHww",
+    quantity: 10,
+    price: 5.99,
+    category: ["Dairy"],
+  },
+  {
+    name: "Eggs (12pcs)",
+    barcodeId: "5432",
+    description:
+      "Eggs are very healthy and contain many nutrients that are important for health. They are a popular food choice for many people. Eggs are a good source of protein and contain many vitamins and minerals.",
+    image:
+      "https://images.unsplash.com/photo-1587486913049-53fc88980cfc?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZWdnc3xlbnwwfHwwfHx8MA%3D%3D",
+    quantity: 10,
+    price: 2.99,
     category: ["Dairy"],
   },
   {
@@ -196,13 +218,35 @@ const products = [
   },
   {
     name: "Oranges (1kg)",
-    barcodeId: "4567",
+    barcodeId: "3829932",
     description:
       "The orange is the fruit of various citrus species in the family Rutaceae; it primarily refers to Citrus sinensis, which is also called sweet orange, to distinguish it from the related Citrus aurantium, referred to as bitter orange.",
     image:
       "https://images.unsplash.com/photo-1547514701-42782101795e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8T3Jhbmdlc3xlbnwwfHwwfHx8MA%3D%3D",
     quantity: 10,
     price: 4.99,
+    category: ["Fruits"],
+  },
+  {
+    name: "Pineapple (1kg)",
+    barcodeId: "328903209",
+    description:
+      "Pineapple is a tropical plant with an edible fruit and the most economically significant plant in the family Bromeliaceae. Pineapples may be cultivated from a crown cutting of the fruit, possibly flowering in 20-24 months and fruiting in the following six months.",
+    image:
+      "https://images.unsplash.com/photo-1589820296156-2454bb8a6ad1?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGluZWFwcGxlfGVufDB8fDB8fHww",
+    quantity: 10,
+    price: 6.99,
+    category: ["Fruits"],
+  },
+  {
+    name: "Grapes (500gm)",
+    barcodeId: "829190",
+    description:
+      "A grape is a fruit, botanically a berry, of the deciduous woody vines of the flowering plant genus Vitis. Grapes can be eaten fresh as table grapes or they can be used for making wine, jam, grape juice, jelly, grape seed extract, raisins, vinegar, and grape seed oil.",
+    image:
+      "https://images.unsplash.com/photo-1596363505729-4190a9506133?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z3JhcGVzfGVufDB8fDB8fHww",
+    quantity: 10,
+    price: 7.99,
     category: ["Fruits"],
   },
 ];
