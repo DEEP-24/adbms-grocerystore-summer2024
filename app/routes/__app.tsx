@@ -89,7 +89,7 @@ export default function AppLayout() {
                 Items
               </NavLink>
               <NavLink
-                to="sale-details"
+                to="order-history"
                 className={({ isActive }) =>
                   cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-gray-100",

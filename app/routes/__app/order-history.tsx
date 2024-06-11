@@ -1,6 +1,6 @@
-import { ArrowLeftIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
+import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { Anchor, Badge, Button } from "@mantine/core";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus, OrderType } from "@prisma/client";
 import type { ActionArgs, LoaderArgs, SerializeFrom } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
@@ -9,16 +9,12 @@ import {
   useLoaderData,
   useSearchParams,
 } from "@remix-run/react";
-import appConfig from "app.config";
 import clsx from "clsx";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import * as React from "react";
 import { useCart } from "~/context/CartContext";
 import { cancelOrder, getOrders } from "~/lib/order.server";
-import { db } from "~/lib/prisma.server";
 import { requireUserId } from "~/lib/session.server";
-import { titleCase } from "~/utils/misc";
+import { formatTime, titleCase } from "~/utils/misc";
 import { badRequest } from "~/utils/misc.server";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US");
@@ -53,84 +49,6 @@ export const action = async ({ request }: ActionArgs) => {
         );
     }
 
-    case "cancel-single-product": {
-      const orderId = formData.get("orderId")?.toString();
-      const productId = formData.get("productId")?.toString();
-      const productQuantity = formData.get("productQuantity")?.toString();
-      const productPrice = formData.get("productPrice")?.toString();
-
-      if (!orderId) {
-        return badRequest({ success: false, message: "Invalid order id" });
-      }
-
-      if (!productId) {
-        return badRequest({ success: false, message: "Invalid product id" });
-      }
-
-      if (!productQuantity) {
-        return badRequest({
-          success: false,
-          message: "Invalid product quantity",
-        });
-      }
-
-      if (!productPrice) {
-        return badRequest({
-          success: false,
-          message: "Invalid product price",
-        });
-      }
-
-      await db.productOrder.update({
-        where: {
-          productId_orderId: {
-            productId,
-            orderId,
-          },
-        },
-        data: {
-          quantity: {
-            set: 0,
-          },
-          amount: {
-            set: 0,
-          },
-          status: OrderStatus.RETURN,
-        },
-      });
-
-      await db.product.update({
-        where: {
-          id: productId,
-        },
-        data: {
-          quantity: {
-            increment: Number(productQuantity),
-          },
-        },
-      });
-
-      const totalCanceledAmount =
-        Number(productPrice) * Number(productQuantity);
-      const canceledTax = totalCanceledAmount * appConfig.TAX_PERCENTAGE;
-
-      await db.payment.update({
-        where: {
-          orderId,
-        },
-        data: {
-          amount: {
-            decrement: totalCanceledAmount,
-          },
-          tax: {
-            decrement: canceledTax,
-          },
-        },
-      });
-
-      return json({ success: true });
-    }
-
     default:
       return json(
         { success: false, message: "Invalid intent" },
@@ -158,30 +76,12 @@ export default function OrderHistory() {
     <>
       <div className="flex flex-col gap-4">
         <div className="max-w-xl">
-          <div className="mb-12">
-            <Button
-              leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
-              variant="white"
-              size="md"
-              component={Link}
-              to=".."
-              pl={0}
-            >
-              Back
-            </Button>
-          </div>
-
           <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
             Sale Details
           </h1>
-          <p className="mt-2 text-sm text-gray-500">
-            Check the status of recent orders.
-          </p>
         </div>
 
-        <div className="mt-16">
-          <h2 className="sr-only">Recent orders</h2>
-
+        <div>
           <div className="flex flex-col gap-20">
             {orders.length > 0 ? (
               <>
@@ -203,9 +103,8 @@ function Order({ order }: { order: LoaderData["orders"][number] }) {
   const returnOrderFetcher = useFetcher();
   const pdfRef = React.useRef<HTMLTableElement>(null);
 
-  const areAllProdcutsNonReturnable = order.products.every(
-    (product) => !product.product.isReturnable,
-  );
+  const isOrderCancelled = order.status === OrderStatus.CANCELLED;
+  const isDelivery = order.type === OrderType.DELIVERY;
 
   return (
     <div key={order.id} ref={pdfRef}>
@@ -225,14 +124,10 @@ function Order({ order }: { order: LoaderData["orders"][number] }) {
             </dd>
           </div>
 
+          {/* Order type */}
           <div className="flex justify-between pt-6 text-gray-900 sm:block sm:pt-0">
-            <dt className="font-semibold">Customer Name</dt>
-            <dd className="sm:mt-1">{order.customerName}</dd>
-          </div>
-
-          <div className="flex justify-between pt-6 text-gray-900 sm:block sm:pt-0">
-            <dt className="font-semibold">Customer Phone</dt>
-            <dd className="sm:mt-1">{order.customerPhone}</dd>
+            <dt className="font-semibold">Order type</dt>
+            <dd className="sm:mt-1">{titleCase(order.type)}</dd>
           </div>
 
           {/* Payment method */}
@@ -247,9 +142,7 @@ function Order({ order }: { order: LoaderData["orders"][number] }) {
           <div className="flex justify-between pt-6  text-gray-900 sm:block sm:pt-0">
             <dt className="font-semibold">Tax amount</dt>
             <dd className="flex items-center gap-2 sm:mt-1">
-              <span className="font-semibold">
-                ${Math.floor(order.payment?.tax!)}
-              </span>
+              <span className="font-semibold">{order.payment?.tax!}</span>
             </dd>
           </div>
 
@@ -257,15 +150,22 @@ function Order({ order }: { order: LoaderData["orders"][number] }) {
           <div className="flex justify-between pt-6  text-gray-900 sm:block sm:pt-0">
             <dt className="font-semibold">Total amount</dt>
             <dd className="flex items-center gap-2 sm:mt-1">
-              <span className="font-semibold">
-                ${Math.floor(order.payment?.amount!)}
-              </span>
+              <span className="font-semibold">{order.payment?.amount!}</span>
+            </dd>
+          </div>
+
+          <div className="flex justify-between pt-6  text-gray-900 sm:block sm:pt-0">
+            <dt className="font-semibold">Status</dt>
+            <dd className="flex items-center gap-2 sm:mt-1">
+              <Badge color={isOrderCancelled ? "blue" : "green"}>
+                {titleCase(order.status)}
+              </Badge>
             </dd>
           </div>
         </dl>
 
         <div className="flex items-center gap-4">
-          <Button
+          {/* <Button
             variant="outline"
             onClick={() => {
               const input = pdfRef.current!;
@@ -284,15 +184,16 @@ function Order({ order }: { order: LoaderData["orders"][number] }) {
             }}
           >
             Invoice
-          </Button>
+          </Button> */}
 
-          {order.status === OrderStatus.DONE ? (
+          {order.status === OrderStatus.DELIVERED ||
+          order.status === OrderStatus.READY ||
+          order.status === OrderStatus.COMPLETED ? (
             <Button
               color="red"
               variant="outline"
               loaderPosition="right"
               loading={returnOrderFetcher.state !== "idle"}
-              disabled={areAllProdcutsNonReturnable}
               onClick={() =>
                 returnOrderFetcher.submit(
                   {
@@ -306,11 +207,26 @@ function Order({ order }: { order: LoaderData["orders"][number] }) {
                 )
               }
             >
-              {areAllProdcutsNonReturnable ? "Non-returnable" : "Return"}
+              Cancel Order
             </Button>
           ) : null}
         </div>
       </div>
+
+      {/* Delivery address  */}
+      {isDelivery ? (
+        <div>
+          <div className="mt-2 flex items-center gap-4 pt-6 text-sm text-gray-900 sm:block sm:pt-0">
+            <span className="pl-6 font-semibold">Delivery address: </span>
+            <span className="font-normal">{order.payment?.address}</span>
+          </div>
+        </div>
+      ) : order.status === OrderStatus.READY ? (
+        <div className="mt-2 flex items-center gap-4 pt-6 text-sm text-gray-900 sm:block sm:pt-0">
+          <span className="pl-6 font-semibold">Pickup Time: </span>
+          <span className="font-normal">{formatTime(order.pickupTime!)}</span>
+        </div>
+      ) : null}
 
       <table className="mt-4 w-full text-gray-500 sm:mt-6">
         <thead className="sr-only text-left text-sm text-gray-500 sm:not-sr-only">
@@ -337,12 +253,6 @@ function Order({ order }: { order: LoaderData["orders"][number] }) {
               Price
             </th>
 
-            <th
-              scope="col"
-              className="hidden py-3 pr-8 font-normal sm:table-cell"
-            >
-              Status
-            </th>
             <th scope="col" className="w-0 py-3 text-right font-normal" />
           </tr>
         </thead>
@@ -382,35 +292,6 @@ function Order({ order }: { order: LoaderData["orders"][number] }) {
                 </td>
 
                 <td className="hidden py-6 pr-8 sm:table-cell">
-                  <Badge color="blue">{product.status}</Badge>
-                </td>
-
-                <td className="flex items-center justify-between gap-4 whitespace-nowrap py-6 text-right font-medium">
-                  {/* <Button
-										variant="subtle"
-										size="sm"
-										color="red"
-										compact
-										disabled={!product.product.isReturnable}
-										onClick={() =>
-											returnOrderFetcher.submit(
-												{
-													intent: 'cancel-single-product',
-													orderId: order.id,
-													productId: product.id,
-													productQuantity: product.quantity.toString(),
-													productPrice: product.amount.toString(),
-												},
-												{
-													method: 'post',
-													replace: true,
-												}
-											)
-										}
-									>
-										{product.product.isReturnable ? 'Delete' : 'Not Returnable'}
-									</Button> */}
-
                   <Anchor
                     component={Link}
                     to={`/product/${product.product.slug}`}

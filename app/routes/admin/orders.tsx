@@ -1,4 +1,4 @@
-import { Button, NativeSelect } from "@mantine/core";
+import { Badge, Button, NativeSelect } from "@mantine/core";
 import { OrderStatus, OrderType } from "@prisma/client";
 import { json, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {
@@ -7,7 +7,7 @@ import {
   useSubmit,
   useTransition,
 } from "@remix-run/react";
-import { ArrowLeftIcon, Badge, ShoppingCartIcon } from "lucide-react";
+import { ArrowLeftIcon, ShoppingCartIcon } from "lucide-react";
 import invariant from "tiny-invariant";
 import { getAllOrders } from "~/lib/order.server";
 import { db } from "~/lib/prisma.server";

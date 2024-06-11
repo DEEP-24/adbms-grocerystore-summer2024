@@ -88,7 +88,7 @@ export async function action({ request }: ActionArgs) {
     pickupTime: pickupTime ? new Date(pickupTime) : null,
   });
 
-  return redirect("/sale-details/?success=true");
+  return redirect("/order-history/?success=true");
 }
 
 export default function Cart() {
