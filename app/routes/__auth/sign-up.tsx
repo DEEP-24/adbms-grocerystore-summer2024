@@ -60,87 +60,98 @@ export default function SignUp() {
   const isSubmitting = fetcher.state !== "idle";
 
   return (
-    <div className="bg-white p-5 rounded-md shadow-lg">
+    <div className="bg-white p-4 rounded-xl shadow-lg flex flex-col items-center justify-center gap-2 w-[40vw]">
       <div>
-        <h2 className="mt-6 text-3xl font-extrabold text-gray-900 text-center">
+        <h1 className="mt-6 font-extrabold text-gray-900 text-center">
           Sign Up
-        </h2>
+        </h1>
       </div>
+      <div className="flex items-center justify-center gap-4 w-full">
+        <div className="flex flex-col items-center justify-center gap-2 w-[40%]">
+          <img src="/logo.png" alt="Logo" className="w-16 h-16 mx-auto" />
+          <h3>Online Grocery Store</h3>
+        </div>
+        <div className="w-[60%]">
+          <fetcher.Form method="post" replace={true} className="mt-8">
+            <input type="hidden" name="redirectTo" value={redirectTo} />
 
-      <fetcher.Form method="post" replace={true} className="mt-8">
-        <input type="hidden" name="redirectTo" value={redirectTo} />
+            <fieldset disabled={isSubmitting} className="flex flex-col gap-4">
+              <TextInput
+                name="name"
+                autoComplete="given-name"
+                label="Name"
+                error={actionData?.fieldErrors?.name}
+                required={true}
+              />
 
-        <fieldset disabled={isSubmitting} className="flex flex-col gap-4">
-          <TextInput
-            name="name"
-            autoComplete="given-name"
-            label="Name"
-            error={actionData?.fieldErrors?.name}
-            required={true}
-          />
+              <TextInput
+                name="email"
+                type="email"
+                autoComplete="email"
+                label="Email address"
+                error={actionData?.fieldErrors?.email}
+                required={true}
+              />
 
-          <TextInput
-            name="email"
-            type="email"
-            autoComplete="email"
-            label="Email address"
-            error={actionData?.fieldErrors?.email}
-            required={true}
-          />
+              <PasswordInput
+                name="password"
+                label="Password"
+                error={actionData?.fieldErrors?.password}
+                autoComplete="current-password"
+                required={true}
+              />
 
-          <PasswordInput
-            name="password"
-            label="Password"
-            error={actionData?.fieldErrors?.password}
-            autoComplete="current-password"
-            required={true}
-          />
+              <PasswordInput
+                name="confirmPassword"
+                label="Confirm Password"
+                error={actionData?.fieldErrors?.confirmPassword}
+                autoComplete="current-password"
+                required={true}
+              />
 
-          <PasswordInput
-            name="confirmPassword"
-            label="Confirm Password"
-            error={actionData?.fieldErrors?.confirmPassword}
-            autoComplete="current-password"
-            required={true}
-          />
+              <TextInput
+                name="phoneNo"
+                type="tel"
+                label="Phone Number"
+                error={actionData?.fieldErrors?.phoneNo}
+                required={true}
+              />
 
-          <TextInput
-            name="phoneNo"
-            type="tel"
-            label="Phone Number"
-            error={actionData?.fieldErrors?.phoneNo}
-            required={true}
-          />
+              <Textarea
+                name="address"
+                label="Address"
+                autoComplete="street-address"
+              />
 
-          <Textarea
-            name="address"
-            label="Address"
-            autoComplete="street-address"
-          />
+              <div className="flex justify-between items-center mt-2">
+                <Group position="apart">
+                  <Switch
+                    id="remember-me"
+                    name="rememberMe"
+                    label="Remember me"
+                  />
+                </Group>
+                <Link
+                  to="/login"
+                  className="text-sm text-gray-600 underline hover:text-black"
+                >
+                  Sign In
+                </Link>
+              </div>
 
-          <div className="flex justify-between items-center mt-2">
-            <Group position="apart">
-              <Switch id="remember-me" name="rememberMe" label="Remember me" />
-            </Group>
-            <Link
-              to="/login"
-              className="text-sm text-gray-600 underline hover:text-black"
-            >
-              Sign In
-            </Link>
-          </div>
-
-          <Button
-            type="submit"
-            loading={isSubmitting}
-            fullWidth={true}
-            loaderPosition="right"
-            mt="1rem"
-          >
-            Sign Up
-          </Button>
-        </fieldset>
-      </fetcher.Form>
+              <Button
+                type="submit"
+                loading={isSubmitting}
+                fullWidth={true}
+                loaderPosition="right"
+                mt="1rem"
+              >
+                Sign Up
+              </Button>
+            </fieldset>
+          </fetcher.Form>
+        </div>
+      </div>
     </div>
   );
 }

@@ -15,7 +15,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function AuthLayout() {
   return (
     <>
-      <div className="flex min-h-full">
+      <div className="flex h-full">
         {/* <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24"> */}
         {/* </div> */}
         <div className="relative hidden flex-1 lg:block">
@@ -24,10 +24,11 @@ export default function AuthLayout() {
             src="https://images.unsplash.com/photo-1628102491629-778571d893a3?q=80&w=3280&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt=""
           />
-        </div>
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute left-[40%] top-5 mx-auto w-full max-w-sm lg:w-96">
-          <Outlet />
+
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute flex items-center justify-center top-[20vh] w-full">
+            <Outlet />
+          </div>
         </div>
       </div>
     </>
