@@ -1,13 +1,10 @@
-import { Badge, Button, NativeSelect } from "@mantine/core";
-import { OrderStatus, OrderType } from "@prisma/client";
+import { Badge, Button, Modal, NativeSelect } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { OrderStatus, OrderType, type Order } from "@prisma/client";
 import { json, type ActionArgs, type LoaderArgs } from "@remix-run/node";
-import {
-  Link,
-  useLoaderData,
-  useSubmit,
-  useTransition,
-} from "@remix-run/react";
-import { ArrowLeftIcon, ShoppingCartIcon } from "lucide-react";
+import { useLoaderData, useSubmit, useTransition } from "@remix-run/react";
+import { ShoppingCartIcon } from "lucide-react";
+import React from "react";
 import invariant from "tiny-invariant";
 import { getAllOrders } from "~/lib/order.server";
 import { db } from "~/lib/prisma.server";
@@ -56,34 +53,45 @@ export default function Orders() {
   const transition = useTransition();
   const submit = useSubmit();
 
+  const [selectedOrderId, setSelectedOrderId] = React.useState<
+    Order["id"] | null
+  >(null);
+
+  const [selectedOrder, setSelectedOrder] = React.useState<
+    (typeof orders)[number] | null
+  >(null);
+
+  const [isModalOpen, handleModal] = useDisclosure(false);
+
   const isSubmitting = transition.state !== "idle";
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  React.useEffect(() => {
+    if (!selectedOrderId) {
+      setSelectedOrder(null);
+      return;
+    }
+
+    const order = orders.find((order) => order.id === selectedOrderId);
+    if (!order) {
+      return;
+    }
+
+    setSelectedOrder(order);
+    handleModal.open();
+    // handleModal is not meemoized, so we don't need to add it to the dependency array
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orders, selectedOrderId]);
 
   return (
     <>
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">
-            <div className="mb-12">
-              <Button
-                leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
-                variant="white"
-                size="md"
-                component={Link}
-                to=".."
-                pl={0}
-              >
-                Back
-              </Button>
-            </div>
-
-            <h1 className="text-xl font-semibold text-gray-900">Orders</h1>
-            <p className="mt-2 text-sm text-gray-700">
-              A list of all the orders in your account including their user
-              details.
-            </p>
+            <h1 className="text-2xl font-semibold text-gray-900">Orders</h1>
           </div>
         </div>
-        <div className="mt-8 flex flex-col">
+        <div className="mt-8 flex flex-col h-full">
           <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
               <div className="shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
@@ -108,6 +116,12 @@ export default function Orders() {
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
                           Status
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
+                          {""}
                         </th>
                         <th
                           scope="col"
@@ -162,6 +176,16 @@ export default function Orders() {
                                 {titleCase(order.status)}
                               </Badge>
                             </td>
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                              <Button
+                                variant="light"
+                                onClick={() => {
+                                  setSelectedOrderId(order.id);
+                                }}
+                              >
+                                View
+                              </Button>
+                            </td>
                             <td className="relative flex items-center justify-center whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
                               <div className="flex items-center gap-2">
                                 <NativeSelect
@@ -209,6 +233,87 @@ export default function Orders() {
           </div>
         </div>
       </div>
+      <Modal
+        opened={isModalOpen}
+        onClose={() => {
+          setSelectedOrderId(null);
+          handleModal.close();
+        }}
+        title="View Order"
+        size="lg"
+        centered={true}
+        overlayBlur={1}
+        overlayOpacity={0.7}
+        closeOnClickOutside={!isSubmitting}
+        closeOnEscape={!isSubmitting}
+      >
+        <div>
+          <table className="mt-4 w-full text-gray-500 sm:mt-6">
+            <thead className="sr-only text-left text-sm text-gray-500 sm:not-sr-only">
+              <tr>
+                <th
+                  scope="col"
+                  className="py-3 pr-8 font-normal sm:w-2/5 lg:w-1/3"
+                >
+                  Product
+                </th>
+                <th
+                  scope="col"
+                  className="hidden w-1/5 py-3 pr-8 font-normal sm:table-cell"
+                >
+                  Barcode ID
+                </th>
+                <th
+                  scope="col"
+                  className="hidden w-1/5 py-3 pr-8 font-normal sm:table-cell"
+                >
+                  Quantity
+                </th>
+                <th
+                  scope="col"
+                  className="hidden py-3 pr-8 font-normal sm:table-cell"
+                >
+                  Price
+                </th>
+
+                <th scope="col" className="w-0 py-3 text-right font-normal" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 border-b border-gray-200 text-sm sm:border-t">
+              {selectedOrder?.products.map((product) => {
+                return (
+                  <tr key={product.id}>
+                    <td className="py-6 pr-8">
+                      <div className="flex items-center">
+                        <img
+                          src={product.product.image}
+                          alt={product.product.name}
+                          className="mr-6 h-16 w-16 rounded object-cover object-center"
+                        />
+                        <div className="flex flex-col font-medium text-gray-900">
+                          {product.product.name}
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="hidden py-6 pr-8 sm:table-cell">
+                      {product.product.barcodeId}
+                    </td>
+
+                    <td className="hidden py-6 pr-8 sm:table-cell">
+                      {product.quantity}
+                    </td>
+
+                    <td className="hidden py-6 pr-8 sm:table-cell">
+                      ${product.amount}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Modal>
     </>
   );
 }
