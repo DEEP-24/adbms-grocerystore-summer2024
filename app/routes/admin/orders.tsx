@@ -26,7 +26,6 @@ export const action = async ({ request }: ActionArgs) => {
 
   const orderId = formData.get("orderId")?.toString();
   invariant(orderId, "Invalid order id");
-
   switch (intent) {
     case "update-order-status": {
       const status = formData.get("status")?.toString();
