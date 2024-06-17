@@ -45,10 +45,14 @@ export async function getOptionalUser(
   request: Request,
 ): Promise<Awaited<ReturnType<typeof getUserById>> | null> {
   const userId = await getUserId(request);
-  if (userId === undefined) return null;
+  if (userId === undefined) {
+    return null;
+  }
 
   const user = await getUserById(userId);
-  if (user) return user;
+  if (user) {
+    return user;
+  }
 
   return null;
 }

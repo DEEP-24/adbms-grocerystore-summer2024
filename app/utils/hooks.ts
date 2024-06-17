@@ -56,7 +56,6 @@ export function useLocalStorageState<T>({
     }
 
     setValue(JSON.parse(localStorageValue));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {

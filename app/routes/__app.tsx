@@ -1,17 +1,11 @@
 import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  NavLink,
-  Outlet,
-  type ShouldReloadFunction,
-} from "@remix-run/react";
+import { Form, Link, NavLink, Outlet } from "@remix-run/react";
 import {
   CircleUserIcon,
   HistoryIcon,
   HomeIcon,
-  ShoppingBasketIcon,
+  ShoppingCartIcon,
 } from "lucide-react";
 import { Footer } from "~/components/Footer";
 import { Button } from "~/components/ui/button";
@@ -76,7 +70,7 @@ export default function AppLayout() {
                 Home
               </NavLink>
               <NavLink
-                to="items"
+                to="/cart"
                 className={({ isActive }) =>
                   cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-gray-100",
@@ -85,8 +79,8 @@ export default function AppLayout() {
                   )
                 }
               >
-                <ShoppingBasketIcon className="h-4 w-4" />
-                Items
+                <ShoppingCartIcon className="h-4 w-4" />
+                Cart
               </NavLink>
               <NavLink
                 to="order-history"
@@ -143,14 +137,11 @@ export default function AppLayout() {
   );
 }
 
-export const unstable_shouldReload: ShouldReloadFunction = ({
-  submission,
-  prevUrl,
-  url,
-}) => {
-  if (!submission && prevUrl.pathname === url.pathname) {
-    return false;
-  }
+// export const unstable_shouldReload : ShouldReloadFunction
+//  ({ submission, prevUrl, url }) => {
+//   if (!submission && prevUrl.pathname === url.pathname) {
+//     return false;
+//   }
 
-  return true;
-};
+//   return true;
+// };

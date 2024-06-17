@@ -129,7 +129,6 @@ export default function ManageProducts() {
       handleModal.close();
     }
     // handleModal is not meemoized, so we don't need to add it to the dependency array
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetcher.data?.success, fetcher.state, fetcher.submission]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -145,7 +144,6 @@ export default function ManageProducts() {
       setImageUrl(imageUploadFetcher.data?.imgSrc);
     }
     // handleModal is not meemoized, so we don't need to add it to the dependency array
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     imageUploadFetcher.data?.success,
     imageUploadFetcher.state,
@@ -170,7 +168,6 @@ export default function ManageProducts() {
     setImageUrl(product.image);
     handleModal.open();
     // handleModal is not meemoized, so we don't need to add it to the dependency array
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products, selectedProductId]);
 
   React.useEffect(() => {

@@ -1,7 +1,7 @@
 import { Badge, Button, Modal, NativeSelect } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { OrderStatus, OrderType, type Order } from "@prisma/client";
-import { json, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { type Order, OrderStatus, OrderType } from "@prisma/client";
+import { type ActionArgs, type LoaderArgs, json } from "@remix-run/node";
 import { useLoaderData, useSubmit, useTransition } from "@remix-run/react";
 import { ShoppingCartIcon } from "lucide-react";
 import React from "react";
@@ -79,7 +79,6 @@ export default function Orders() {
     setSelectedOrder(order);
     handleModal.open();
     // handleModal is not meemoized, so we don't need to add it to the dependency array
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orders, selectedOrderId]);
 
   return (
