@@ -6,6 +6,7 @@ import {
   TextInput,
   Textarea,
 } from "@mantine/core";
+import { DatePicker } from "@mantine/dates";
 import type { ActionFunction } from "@remix-run/node";
 import { Link, useFetcher, useSearchParams } from "@remix-run/react";
 import { createUserSession } from "~/lib/session.server";
@@ -29,7 +30,18 @@ export const action: ActionFunction = async ({ request }) => {
     return badRequest<ActionData>({ fieldErrors });
   }
 
-  const { email, password, name, phoneNo, address } = fields;
+  const {
+    email,
+    password,
+    firstName,
+    lastName,
+    phoneNo,
+    address,
+    city,
+    state,
+    dob,
+    zipcode,
+  } = fields;
 
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
@@ -40,7 +52,18 @@ export const action: ActionFunction = async ({ request }) => {
     });
   }
 
-  const user = await createUser({ name, email, password, phoneNo, address });
+  const user = await createUser({
+    firstName,
+    lastName,
+    email,
+    password,
+    phoneNo,
+    address,
+    dob: new Date(dob),
+    city,
+    state,
+    zipcode,
+  });
 
   return createUserSession({
     request,
@@ -76,13 +99,22 @@ export default function SignUp() {
             <input type="hidden" name="redirectTo" value={redirectTo} />
 
             <fieldset disabled={isSubmitting} className="flex flex-col gap-4">
-              <TextInput
-                name="name"
-                autoComplete="given-name"
-                label="Name"
-                error={actionData?.fieldErrors?.name}
-                required={true}
-              />
+              <div className="flex items-center justify-center gap-2">
+                <TextInput
+                  name="firstName"
+                  autoComplete="given-name"
+                  label="First Name"
+                  error={actionData?.fieldErrors?.firstName}
+                  required={true}
+                />
+                <TextInput
+                  name="lastName"
+                  autoComplete="given-name"
+                  label="Last Name"
+                  error={actionData?.fieldErrors?.lastName}
+                  required={true}
+                />
+              </div>
 
               <TextInput
                 name="email"
@@ -93,21 +125,24 @@ export default function SignUp() {
                 required={true}
               />
 
-              <PasswordInput
-                name="password"
-                label="Password"
-                error={actionData?.fieldErrors?.password}
-                autoComplete="current-password"
-                required={true}
-              />
-
-              <PasswordInput
-                name="confirmPassword"
-                label="Confirm Password"
-                error={actionData?.fieldErrors?.confirmPassword}
-                autoComplete="current-password"
-                required={true}
-              />
+              <div className="flex items-center justify-center gap-2">
+                <PasswordInput
+                  name="password"
+                  label="Password"
+                  error={actionData?.fieldErrors?.password}
+                  autoComplete="current-password"
+                  required={true}
+                  className="w-full"
+                />
+                <PasswordInput
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  error={actionData?.fieldErrors?.confirmPassword}
+                  autoComplete="current-password"
+                  required={true}
+                  className="w-full"
+                />
+              </div>
 
               <TextInput
                 name="phoneNo"
@@ -122,6 +157,37 @@ export default function SignUp() {
                 label="Address"
                 autoComplete="street-address"
               />
+
+              <div className="flex items-center justify-center gap-2">
+                <TextInput
+                  name="city"
+                  label="City"
+                  error={actionData?.fieldErrors?.city}
+                  required={true}
+                />
+                <DatePicker
+                  name="dob"
+                  label="Date of Birth"
+                  error={actionData?.fieldErrors?.dob}
+                  maxDate={new Date()}
+                  required={true}
+                />
+              </div>
+
+              <div className="flex items-center justify-center gap-2">
+                <TextInput
+                  name="state"
+                  label="State"
+                  error={actionData?.fieldErrors?.state}
+                  required={true}
+                />
+                <TextInput
+                  name="zipcode"
+                  label="Zipcode"
+                  error={actionData?.fieldErrors?.zipcode}
+                  required={true}
+                />
+              </div>
 
               <div className="flex justify-between items-center mt-2">
                 <Group position="apart">

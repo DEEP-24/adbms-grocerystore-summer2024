@@ -9,7 +9,8 @@ export async function getUserById(id: User["id"]) {
     where: { id },
     select: {
       id: true,
-      name: true,
+      firstName: true,
+      lastName: true,
       email: true,
       address: true,
     },
@@ -20,7 +21,8 @@ export async function getUserByEmail(email: User["email"]) {
   return db.user.findUnique({
     where: { email },
     select: {
-      name: true,
+      firstName: true,
+      lastName: true,
       email: true,
     },
   });
@@ -29,26 +31,41 @@ export async function getUserByEmail(email: User["email"]) {
 export async function createUser({
   email,
   password,
-  name,
+  firstName,
+  lastName,
   role = Role.CUSTOMER,
   phoneNo,
   address,
+  dob,
+  city,
+  state,
+  zipcode,
 }: {
   email: User["email"];
   password: string;
-  name: User["name"];
+  firstName: User["firstName"];
+  lastName: User["lastName"];
   role?: User["role"];
   phoneNo: User["phoneNo"];
   address: User["address"];
+  dob: User["dob"];
+  city: User["city"];
+  state: User["state"];
+  zipcode: User["zipcode"];
 }) {
   return db.user.create({
     data: {
-      name,
+      firstName,
+      lastName,
       email,
       password: await createPasswordHash(password),
       role,
       phoneNo,
       address,
+      dob,
+      city,
+      state,
+      zipcode,
     },
   });
 }

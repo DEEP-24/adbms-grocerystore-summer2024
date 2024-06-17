@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-const name = z.string().min(1, "Name is required");
+const firstName = z.string().min(1, "FirstName is required");
+const lastName = z.string().min(1, "LastName is required");
 const email = z.string().email("Invalid email");
 const password = z.string().min(8, "Password must be at least 8 characters");
 
@@ -13,12 +14,17 @@ export const LoginSchema = z.object({
 
 export const RegisterUserSchema = z
   .object({
-    name,
+    firstName,
+    lastName,
     email,
     password,
     confirmPassword: password,
     phoneNo: z.string().min(10, "Phone number is required"),
     address: z.string().min(1, "Address is required"),
+    dob: z.string().min(1, "Date of birth is required"),
+    city: z.string().min(3, "City is required"),
+    state: z.string().min(2, "State is required"),
+    zipcode: z.string().min(5, "Zipcode is required"),
     redirectTo: z.string().default("/"),
   })
   .refine((data) => data.password === data.confirmPassword, {

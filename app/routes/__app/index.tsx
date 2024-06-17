@@ -15,13 +15,14 @@ export default function Items() {
 
         {categories.map((category) => {
           return (
-            <div key={category.id}>
-              <h3 className="mt-3 text-lg font-semibold text-gray-900 bg-gray-100 rounded-xl text-center p-2">
-                {category.name}
-              </h3>
-
-              <ProductCarousel products={category.products} />
-            </div>
+            category.products.length > 0 && (
+              <div key={category.id}>
+                <h3 className="mt-3 text-lg font-semibold text-gray-900 bg-gray-100 rounded-xl text-center p-2">
+                  {category.name}
+                </h3>
+                <ProductCarousel products={category.products} />
+              </div>
+            )
           );
         })}
       </div>

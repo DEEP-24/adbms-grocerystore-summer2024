@@ -94,7 +94,7 @@ export default function AppLayout() {
         <div className="flex flex-col h-full overflow-hidden">
           <header className="flex flex-shrink-0 h-14 items-center justify-end gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
             <div className="flex flex-col items-center justify-center">
-              <span>{user?.name}</span>
+              <span>{`${user?.firstName}${user?.lastName}`}</span>
               <span>{user?.email}</span>
             </div>
             <DropdownMenu>

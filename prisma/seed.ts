@@ -16,29 +16,46 @@ async function seed() {
   await db.user.createMany({
     data: [
       {
-        name: "John Doe",
+        firstName: "John",
+        lastName: "Doe",
         email: "user@app.com",
         password: await createPasswordHash("password"),
         role: Role.CUSTOMER,
         phoneNo: "1234567890",
         address: "123 Main St",
+        dob: new Date("1990-01-01"),
+        city: "New York",
+        state: "NY",
+        zipcode: "10001",
       },
       {
-        name: "Jane Doe",
+        firstName: "Jane",
+        lastName: "Doe",
         email: "admin@app.com",
         password: await createPasswordHash("password"),
         role: Role.ADMIN,
         phoneNo: "1234567890",
-        address: "123 Main St",
+        address: "123 admin St",
+        dob: new Date("1990-02-02"),
+        city: "Los Angeles",
+        state: "CA",
+        zipcode: "10002",
       },
     ],
   });
 
   await db.admin.create({
     data: {
-      name: "Roxanna",
+      firstName: "Roxanna",
+      lastName: "Doe",
       email: "admin@app.com",
       password: await createPasswordHash("password"),
+      phoneNo: "1234567890",
+      address: "123 Main St",
+      dob: new Date("1990-03-05"),
+      city: "San Francisco",
+      state: "CA",
+      zipcode: "10004",
     },
   });
 
@@ -260,5 +277,35 @@ const categories = [
   },
   {
     name: "Dairy",
+  },
+  {
+    name: "Beverages",
+  },
+  {
+    name: "Bakery",
+  },
+  {
+    name: "Meat",
+  },
+  {
+    name: "Seafood",
+  },
+  {
+    name: "Pantry",
+  },
+  {
+    name: "Frozen",
+  },
+  {
+    name: "Personal Care",
+  },
+  {
+    name: "Household",
+  },
+  {
+    name: "Baby",
+  },
+  {
+    name: "Pets",
   },
 ];

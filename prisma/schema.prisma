@@ -8,10 +8,17 @@ datasource db {
 }
 
 model Admin {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  password String
-  email    String @unique
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String
+  lastName  String
+  password  String
+  email     String   @unique
+  phoneNo   String
+  address   String
+  dob       DateTime
+  city      String
+  state     String
+  zipcode   String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -20,12 +27,17 @@ model Admin {
 }
 
 model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  password String
-  email    String @unique
-  phoneNo  String
-  address  String
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String
+  lastName  String
+  password  String
+  email     String   @unique
+  phoneNo   String
+  address   String
+  dob       DateTime
+  city      String
+  state     String
+  zipcode   String
 
   role     Role      @default(CUSTOMER)
   orders   Order[]
