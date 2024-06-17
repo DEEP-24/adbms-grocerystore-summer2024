@@ -73,7 +73,7 @@ export default function Item() {
                     <div className="mt-4 space-y-6">
                       <span>Available Quantity: </span>
                       <span className="text-base text-gray-500">
-                        {product.quantity}
+                        {product.quantity} {product.quantityUnit}
                       </span>
                     </div>
 
@@ -93,9 +93,21 @@ export default function Item() {
                       onChange={(val) => setQuantity(Number(val))}
                       min={1}
                       defaultValue={1}
+                      className="w-full"
                     />
                   </>
                 )}
+                <div className="flex items-center justify-center mt-4">
+                  {product.isReturnable ? (
+                    <span className="text-green-500">
+                      product can be returned
+                    </span>
+                  ) : (
+                    <span className="text-red-500">
+                      product cannot be returned
+                    </span>
+                  )}
+                </div>
               </section>
             </div>
             <div className="mt-6 lg:col-span-2 lg:row-start-2 lg:max-w-lg lg:self-start">

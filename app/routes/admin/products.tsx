@@ -20,6 +20,7 @@ import { z } from "zod";
 import { db } from "~/lib/prisma.server";
 import { getAllCategories, getAllProducts } from "~/lib/product.server";
 import { requireUser } from "~/lib/session.server";
+import { QuantityUnit } from "~/quantity-units";
 import { badRequest } from "~/utils/misc.server";
 import type { inferErrors } from "~/utils/validation";
 import { validateAction } from "~/utils/validation";
@@ -42,6 +43,7 @@ const ManageProductSchema = z.object({
     z.number().min(0, "Price must be greater than 0"),
   ),
   image: z.string().min(1, "Image is required"),
+  quantityUnit: z.string().min(1, "Quantity Unit is required"),
   category: z.string().min(1, "Category is required"),
   barcodeId: z.string().min(1, "Barcode ID is required"),
   isReturnable: z.string().min(1, "Returnable is required"),
@@ -92,6 +94,7 @@ export const action: ActionFunction = async ({ request }) => {
       isReturnable: rest.isReturnable === "true",
       slug: slugify(rest.name, { lower: true }),
       category: { connect: { id: rest.category } },
+      quantityUnit: rest.quantityUnit as string,
     },
   });
 
@@ -235,6 +238,12 @@ export default function ManageProducts() {
                       scope="col"
                       className="hidden py-3.5 px-3 text-left text-sm font-semibold text-gray-900 sm:table-cell"
                     >
+                      Unit
+                    </th>
+                    <th
+                      scope="col"
+                      className="hidden py-3.5 px-3 text-left text-sm font-semibold text-gray-900 sm:table-cell"
+                    >
                       Category
                     </th>
                     <th
@@ -265,6 +274,9 @@ export default function ManageProducts() {
                       </td>
                       <td className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">
                         {product.quantity}
+                      </td>
+                      <td className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">
+                        {product.quantityUnit}
                       </td>
                       <td className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">
                         {product.category.name}
@@ -318,21 +330,24 @@ export default function ManageProducts() {
           <fieldset disabled={isSubmitting} className="flex flex-col gap-4">
             <input type="hidden" name="productId" value={selectedProduct?.id} />
 
-            <TextInput
-              name="name"
-              label="Name"
-              defaultValue={selectedProduct?.name}
-              error={fetcher.data?.fieldErrors?.name}
-              required={true}
-            />
-
-            <Textarea
-              name="barcodeId"
-              label="Barcode ID"
-              defaultValue={selectedProduct?.barcodeId}
-              error={fetcher.data?.fieldErrors?.barcodeId}
-              required={true}
-            />
+            <div className="flex items-center justify-center gap-2 w-full">
+              <TextInput
+                name="name"
+                label="Name"
+                defaultValue={selectedProduct?.name}
+                error={fetcher.data?.fieldErrors?.name}
+                required={true}
+                className="w-full"
+              />
+              <TextInput
+                name="barcodeId"
+                label="Barcode ID"
+                defaultValue={selectedProduct?.barcodeId}
+                error={fetcher.data?.fieldErrors?.barcodeId}
+                required={true}
+                className="w-full"
+              />
+            </div>
 
             <Textarea
               name="description"
@@ -342,36 +357,52 @@ export default function ManageProducts() {
               required={true}
             />
 
-            <NumberInput
-              name="price"
-              label="Price"
-              min={0}
-              defaultValue={selectedProduct?.price}
-              error={fetcher.data?.fieldErrors?.price}
-              precision={2}
-              required={true}
-            />
+            <div className="flex items-center justify-center gap-2 w-full">
+              <NumberInput
+                name="price"
+                label="Price"
+                min={0}
+                defaultValue={selectedProduct?.price}
+                error={fetcher.data?.fieldErrors?.price}
+                precision={2}
+                required={true}
+              />
+              <Select
+                name="isReturnable"
+                label="Is returnable"
+                defaultValue={selectedProduct?.isReturnable.toString()}
+                error={fetcher.data?.fieldErrors?.isReturnable}
+                data={[
+                  { label: "Yes", value: "true" },
+                  { label: "No", value: "false" },
+                ]}
+                required={true}
+              />
+            </div>
 
-            <Select
-              name="isReturnable"
-              label="Is returnable"
-              defaultValue={selectedProduct?.isReturnable.toString()}
-              error={fetcher.data?.fieldErrors?.isReturnable}
-              data={[
-                { label: "Yes", value: "true" },
-                { label: "No", value: "false" },
-              ]}
-              required={true}
-            />
-
-            <NumberInput
-              name="quantity"
-              label="Quantity"
-              defaultValue={selectedProduct?.quantity}
-              min={0}
-              error={fetcher.data?.fieldErrors?.quantity}
-              required={true}
-            />
+            <div className="flex items-center justify-center gap-2 w-full">
+              <NumberInput
+                name="quantity"
+                label="Quantity"
+                defaultValue={selectedProduct?.quantity}
+                min={0}
+                error={fetcher.data?.fieldErrors?.quantity}
+                required={true}
+              />
+              <Select
+                name="quantityUnit"
+                label="Unit"
+                defaultValue={selectedProduct?.quantityUnit}
+                error={fetcher.data?.fieldErrors?.quantityUnit}
+                data={Object.values(QuantityUnit).map((unit) => ({
+                  label: unit,
+                  value: unit,
+                }))}
+                placeholder="Select Unit"
+                searchable={true}
+                required={true}
+              />
+            </div>
 
             <TextInput
               name="image"

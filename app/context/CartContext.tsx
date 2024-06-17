@@ -3,10 +3,8 @@ import { cleanNotifications, showNotification } from "@mantine/notifications";
 import type { Product } from "@prisma/client";
 import appConfig from "app.config";
 import * as React from "react";
-import { useLocalStorageState } from "~/utils/hooks";
+import { useLocalStorageState, useOptionalUser } from "~/utils/hooks";
 import type { DateToString } from "~/utils/types";
-
-const LocalStorageKey = "ekart-application";
 
 export type CartItem = DateToString<Product> & {
   basePrice: number;
@@ -25,8 +23,12 @@ interface ICartContext {
 const CartContext = React.createContext<ICartContext | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useOptionalUser();
+
+  const storageKey = user ? `cart-${user.id}` : "grocery-store";
+
   const [items, setItems] = useLocalStorageState<CartItem[]>({
-    key: LocalStorageKey,
+    key: storageKey,
     defaultValue: [],
   });
 

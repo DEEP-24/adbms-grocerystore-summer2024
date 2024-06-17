@@ -4,7 +4,7 @@
  - [] Add additional status options for orders, such as "Processing," "Shipped," "Delivered," and "Cancelled."
 
 ## 2. Add unit as per the item instead of one
-- Instead of a single unit option, introduce multiple unit options based on the item type (e.g., piece, kilogram, liter, etc.).
+- [X] Instead of a single unit option, introduce multiple unit options based on the item type (e.g., piece, kilogram, liter, etc.).
 
 ## 3. Add more categories
 - [X] Expand the product categories to include more diverse options, such as electronics, home appliances, fashion, and others.
@@ -23,4 +23,4 @@
 - Add the following fields to the Credit or Debit Card payment options (billing address: aptno, street, city, state, zipcode)
 
 ## 8. Add a option of showing the availability of return
-- Add a option to display the availability of return for each product on the product details page.
+- [X] Add a option to display the availability of return for each product on the product details page.

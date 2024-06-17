@@ -1,5 +1,6 @@
 import { PrismaClient, Role } from "@prisma/client";
 import slugify from "slugify";
+import { QuantityUnit } from "~/quantity-units";
 import { createPasswordHash } from "~/utils/misc.server";
 
 const db = new PrismaClient();
@@ -84,6 +85,7 @@ async function seed() {
         slug: slugify(product.name, { lower: true }),
         quantity: product.quantity,
         categoryId: category!.id,
+        quantityUnit: product.quantityUnit,
       },
     });
   }
@@ -102,7 +104,7 @@ seed()
 
 const products = [
   {
-    name: "Brinjals (300gm)",
+    name: "Brinjals",
     barcodeId: "1234",
     description:
       "Brinjal is a tropical and subtropical plant that prefers a warm and humid climate. It is a tender perennial, grown as an annual vegetable crop in temperate climates. The plant is erect, with a single stem that grows to a height of 1-3 m (3-10 ft).",
@@ -111,9 +113,10 @@ const products = [
     quantity: 10,
     price: 11.99,
     category: ["Vegetables"],
+    quantityUnit: QuantityUnit.Lb,
   },
   {
-    name: "Cabbage (500gm)",
+    name: "Cabbage",
     barcodeId: "44566",
     description:
       "Cabbage is a leafy green, red, or white biennial plant, grown as an annual vegetable crop for its dense-leaved heads. It is descended from the wild cabbage, B. oleracea, and belongs to the same species as broccoli and cauliflower.",
@@ -122,9 +125,10 @@ const products = [
     quantity: 10,
     price: 7.99,
     category: ["Vegetables"],
+    quantityUnit: QuantityUnit.Lb,
   },
   {
-    name: "Carrots (500gm)",
+    name: "Carrots",
     barcodeId: "0382",
     description:
       "The carrot is a root vegetable, typically orange in color, though purple, black, red, white, and yellow cultivars exist. Carrots are a domesticated form of the wild carrot, Daucus carota, native to Europe and Southwestern Asia.",
@@ -133,9 +137,10 @@ const products = [
     quantity: 10,
     price: 9.99,
     category: ["Vegetables"],
+    quantityUnit: QuantityUnit.Lb,
   },
   {
-    name: "Potatoes (1kg)",
+    name: "Potatoes",
     barcodeId: "738293829",
     description:
       "The potato is a root vegetable native to the Americas, a starchy tuber of the plant Solanum tuberosum, and the plant itself, a perennial in the family Solanaceae.",
@@ -144,9 +149,10 @@ const products = [
     quantity: 10,
     price: 5.99,
     category: ["Vegetables"],
+    quantityUnit: QuantityUnit.Lb,
   },
   {
-    name: "Tomatoes (500gm)",
+    name: "Tomatoes",
     barcodeId: "12712182",
     description:
       "The tomato is the edible berry of the plant Solanum lycopersicum, commonly known as a tomato plant. The species originated in western South America and Central America.",
@@ -155,9 +161,10 @@ const products = [
     quantity: 10,
     price: 6.99,
     category: ["Vegetables"],
+    quantityUnit: QuantityUnit.Lb,
   },
   {
-    name: "Milk (1L)",
+    name: "Milk",
     barcodeId: "9876",
     description:
       "Milk is a nutrient-rich liquid food produced by the mammary glands of mammals. It is the primary source of nutrition for young mammals, including breastfed human infants before they are able to digest solid food.",
@@ -166,9 +173,10 @@ const products = [
     quantity: 10,
     price: 3.99,
     category: ["Dairy"],
+    quantityUnit: QuantityUnit.Oz,
   },
   {
-    name: "Cheese (200gm)",
+    name: "Cheese",
     barcodeId: "8765",
     description:
       "Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures, and forms by coagulation of the milk protein casein. It comprises proteins and fat from milk, usually the milk of cows, buffalo, goats, or sheep.",
@@ -177,9 +185,10 @@ const products = [
     quantity: 10,
     price: 6.99,
     category: ["Dairy"],
+    quantityUnit: QuantityUnit.Lb,
   },
   {
-    name: "Yogurt (500gm)",
+    name: "Yogurt",
     barcodeId: "2891021",
     description:
       "Yogurt, yoghurt, or yoghourt is a food produced by bacterial fermentation of milk. The bacteria used to make yogurt are known as yogurt cultures. Fermentation of sugars in the milk by these bacteria produces lactic acid, which acts on milk protein to give yogurt its texture and characteristic tart flavor.",
@@ -188,9 +197,10 @@ const products = [
     quantity: 10,
     price: 4.99,
     category: ["Dairy"],
+    quantityUnit: QuantityUnit.G,
   },
   {
-    name: "Butter (200gm)",
+    name: "Butter",
     barcodeId: "12198",
     description:
       "Butter is a dairy product made from the fat and protein components of milk or cream. It is a semi-solid emulsion at room temperature, consisting of approximately 80% butterfat. It is used at room temperature as a spread, melted as a condiment, and used as an ingredient in baking, sauce making, pan frying, and other cooking procedures.",
@@ -199,9 +209,10 @@ const products = [
     quantity: 10,
     price: 5.99,
     category: ["Dairy"],
+    quantityUnit: QuantityUnit.Oz,
   },
   {
-    name: "Eggs (12pcs)",
+    name: "Eggs",
     barcodeId: "5432",
     description:
       "Eggs are very healthy and contain many nutrients that are important for health. They are a popular food choice for many people. Eggs are a good source of protein and contain many vitamins and minerals.",
@@ -210,9 +221,10 @@ const products = [
     quantity: 10,
     price: 2.99,
     category: ["Dairy"],
+    quantityUnit: QuantityUnit.PCS,
   },
   {
-    name: "Apples (1kg)",
+    name: "Apples",
     barcodeId: "3456",
     description:
       "The apple tree is a deciduous tree in the rose family best known for its sweet, pomaceous fruit, the apple. It is cultivated worldwide as a fruit tree and is the most widely grown species in the genus Malus.",
@@ -221,9 +233,10 @@ const products = [
     quantity: 10,
     price: 5.99,
     category: ["Fruits"],
+    quantityUnit: QuantityUnit.Lb,
   },
   {
-    name: "Bananas (1kg)",
+    name: "Bananas",
     barcodeId: "2345",
     description:
       "A banana is an elongated, edible fruit produced by several kinds of large herbaceous flowering plants in the genus Musa. The fruit is variable in size, color, and firmness, but is usually elongated and curved, with soft flesh rich in starch covered with a rind, which may be green, yellow, red, purple, or brown when ripe.",
@@ -232,9 +245,10 @@ const products = [
     quantity: 10,
     price: 3.99,
     category: ["Fruits"],
+    quantityUnit: QuantityUnit.Lb,
   },
   {
-    name: "Oranges (1kg)",
+    name: "Oranges",
     barcodeId: "3829932",
     description:
       "The orange is the fruit of various citrus species in the family Rutaceae; it primarily refers to Citrus sinensis, which is also called sweet orange, to distinguish it from the related Citrus aurantium, referred to as bitter orange.",
@@ -243,9 +257,10 @@ const products = [
     quantity: 10,
     price: 4.99,
     category: ["Fruits"],
+    quantityUnit: QuantityUnit.Lb,
   },
   {
-    name: "Pineapple (1kg)",
+    name: "Pineapple",
     barcodeId: "328903209",
     description:
       "Pineapple is a tropical plant with an edible fruit and the most economically significant plant in the family Bromeliaceae. Pineapples may be cultivated from a crown cutting of the fruit, possibly flowering in 20-24 months and fruiting in the following six months.",
@@ -254,9 +269,10 @@ const products = [
     quantity: 10,
     price: 6.99,
     category: ["Fruits"],
+    quantityUnit: QuantityUnit.PCS,
   },
   {
-    name: "Grapes (500gm)",
+    name: "Grapes",
     barcodeId: "829190",
     description:
       "A grape is a fruit, botanically a berry, of the deciduous woody vines of the flowering plant genus Vitis. Grapes can be eaten fresh as table grapes or they can be used for making wine, jam, grape juice, jelly, grape seed extract, raisins, vinegar, and grape seed oil.",
@@ -265,6 +281,7 @@ const products = [
     quantity: 10,
     price: 7.99,
     category: ["Fruits"],
+    quantityUnit: QuantityUnit.Lb,
   },
 ];
 

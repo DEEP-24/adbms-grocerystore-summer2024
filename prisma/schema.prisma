@@ -58,6 +58,7 @@ model Product {
   image        String
   isReturnable Boolean @default(true)
   quantity     Int
+  quantityUnit String
   price        Float
 
   orders ProductOrder[]
@@ -161,4 +162,15 @@ enum OrderStatus {
 enum Role {
   ADMIN
   CUSTOMER
+}
+
+enum QuantityUnit {
+  KG
+  G
+  MG
+  Oz
+  Lb
+  L
+  ML
+  PCS
 }
