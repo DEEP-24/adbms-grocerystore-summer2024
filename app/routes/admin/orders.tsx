@@ -134,8 +134,15 @@ export default function Orders() {
                       {orders.map((order) => {
                         const statusOptions =
                           order.type === OrderType.PICKUP
-                            ? ["ACCEPTED", "READY", "COMPLETED"]
-                            : ["ACCEPTED", "DELIVERED"];
+                            ? ["ACCEPTED", "READY", "COMPLETED", "PROCESSING"]
+                            : [
+                                "ACCEPTED",
+                                "PROCESSING",
+                                "DELIVERED",
+                                "ORDER_ASSIGNED",
+                                "SHIPPED",
+                                "OUT_FOR_DELIVERY",
+                              ];
 
                         return (
                           <tr key={order.id}>
@@ -143,7 +150,7 @@ export default function Orders() {
                               <div className="flex items-center">
                                 <div className="ml-4">
                                   <div className="font-medium text-gray-900">
-                                    {order.user.name}
+                                    {`${order.user.firstName} ${order.user.lastName}`}
                                   </div>
                                   <div className="text-gray-500">
                                     {order.user.email}

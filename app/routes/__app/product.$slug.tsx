@@ -99,13 +99,9 @@ export default function Item() {
                 )}
                 <div className="flex items-center justify-center mt-4">
                   {product.isReturnable ? (
-                    <span className="text-green-500">
-                      product can be returned
-                    </span>
+                    <span className="text-green-500">Returnable</span>
                   ) : (
-                    <span className="text-red-500">
-                      product cannot be returned
-                    </span>
+                    <span className="text-red-500">Not returnable</span>
                   )}
                 </div>
               </section>
