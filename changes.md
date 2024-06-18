@@ -20,7 +20,7 @@
 - [X] Add the following fields to the user profile (dob, city, state and zipcode)
 
 ## 7. Additional payment fields
-- Add the following fields to the Credit or Debit Card payment options (billing address: aptno, street, city, state, zipcode)
+- [X] Add the following fields to the Credit or Debit Card payment options (billing address: aptno, street, city, state, zipcode)
 
 ## 8. Add a option of showing the availability of return
 - [X] Add a option to display the availability of return for each product on the product details page.

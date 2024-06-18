@@ -396,6 +396,18 @@ export default function Cart() {
                   hideOutsideDates={true}
                 />
               </div>
+
+              <div className="flex items-center gap-4">
+                <TextInput label="City" />
+                <TextInput label="Apt no" />
+              </div>
+
+              <Textarea label="Street" />
+
+              <div className="flex items-center gap-4">
+                <TextInput label="State" />
+                <TextInput label="Zipcode" />
+              </div>
             </>
           )}
 
