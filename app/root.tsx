@@ -79,9 +79,7 @@ export default function App() {
     <Document>
       <ModalsProvider>
         <NotificationsProvider autoClose={2000} limit={3}>
-          <CartProvider>
-            <Outlet />
-          </CartProvider>
+          <Outlet />
         </NotificationsProvider>
       </ModalsProvider>
     </Document>

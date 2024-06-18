@@ -20,14 +20,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
 import { OrderType, PaymentMethod } from "@prisma/client";
 import type { ActionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { Link, useFetcher, useNavigate } from "@remix-run/react";
 import * as React from "react";
 import ReactInputMask from "react-input-mask";
 import type { CartItem } from "~/context/CartContext";
 import { useCart } from "~/context/CartContext";
 import { createOrder } from "~/lib/order.server";
-import { getUserId } from "~/lib/session.server";
+import { requireUserId } from "~/lib/session.server";
 import { useAppData, useOptionalUser } from "~/utils/hooks";
 import { formatDateTime, titleCase } from "~/utils/misc";
 import { badRequest } from "~/utils/misc.server";
@@ -40,11 +40,7 @@ type ActionData = Partial<{
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
 
-  const userId = await getUserId(request);
-
-  if (!userId) {
-    return json({ success: false, message: "Unauthorized" }, { status: 401 });
-  }
+  const userId = await requireUserId(request);
 
   const stringifiedProducts = formData.get("products[]")?.toString();
   const amount = formData.get("amount")?.toString();

@@ -2,7 +2,7 @@ import type { Product } from "@prisma/client";
 import { useMatches } from "@remix-run/react";
 import * as React from "react";
 import type { RootLoaderData } from "~/root";
-import type { AppLoaderData } from "~/routes/__app";
+import type { AppLoaderData } from "~/routes/__dashboard/__app";
 /**
  * This base hook is used in other hooks to quickly search for specific data
  * across all loader data using useMatches.
@@ -25,8 +25,17 @@ export function useOptionalUser() {
   return useMatchesData("root") as RootLoaderData;
 }
 
+export function useUser() {
+  const { user } = useOptionalUser();
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return user;
+}
+
 export function useAppData() {
-  return useMatchesData("routes/__app") as AppLoaderData;
+  return useMatchesData("routes/__dashboard/__app") as AppLoaderData;
 }
 
 export function useProduct(slug: Product["slug"]) {

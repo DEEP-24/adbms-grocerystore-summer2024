@@ -3,7 +3,7 @@ import { cleanNotifications, showNotification } from "@mantine/notifications";
 import type { Product } from "@prisma/client";
 import appConfig from "app.config";
 import * as React from "react";
-import { useLocalStorageState, useOptionalUser } from "~/utils/hooks";
+import { useLocalStorageState, useUser } from "~/utils/hooks";
 import type { DateToString } from "~/utils/types";
 
 export type CartItem = DateToString<Product> & {
@@ -23,14 +23,36 @@ interface ICartContext {
 const CartContext = React.createContext<ICartContext | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useOptionalUser();
-
-  const storageKey = user ? `cart-${user.id}` : "grocery-store";
+  const user = useUser();
+  const storageKey = `cart-${user.id}`;
 
   const [items, setItems] = useLocalStorageState<CartItem[]>({
     key: storageKey,
     defaultValue: [],
   });
+
+  // React.useEffect(() => {
+  //   if (user) {
+  //     Cookies.set("storageKey", storageKey, { expires: 7 });
+  //   }
+  // }, [user, storageKey]);
+
+  // React.useEffect(() => {
+  //   const key = Cookies.get("storageKey");
+  //   if (key) {
+  //     const storedItems = localStorage.getItem(key);
+  //     if (storedItems) {
+  //       setItems(JSON.parse(storedItems));
+  //     }
+  //   }
+  // }, [setItems]);
+
+  // React.useEffect(() => {
+  //   const key = Cookies.get("storageKey");
+  //   if (key) {
+  //     localStorage.setItem(key, JSON.stringify(items));
+  //   }
+  // }, [items]);
 
   const priceBeforeTax = items.reduce(
     (acc, item) => acc + item.basePrice * item.quantity,
