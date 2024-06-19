@@ -1,6 +1,6 @@
 import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, NavLink, Outlet } from "@remix-run/react";
+import { Form, Link, NavLink, Outlet, useSubmit } from "@remix-run/react";
 import {
   CircleUserIcon,
   HistoryIcon,
@@ -15,18 +15,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import { useCart } from "~/context/CartContext";
 import {
   getAllCategoriesWithProducts,
   getAllProducts,
 } from "~/lib/product.server";
-import {
-  isAdmin,
-  isCustomer,
-  logout,
-  requireUserId,
-} from "~/lib/session.server";
+import { isAdmin, isCustomer, requireUserId } from "~/lib/session.server";
 import { cn } from "~/lib/utils";
-import { useOptionalUser } from "~/utils/hooks";
+import { useOptionalUser, useUser } from "~/utils/hooks";
 
 export type AppLoaderData = SerializeFrom<typeof loader>;
 export const loader = async ({ request }: LoaderArgs) => {
@@ -47,7 +43,9 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function AppLayout() {
-  const { user } = useOptionalUser();
+  const user = useUser();
+  const { clearCart } = useCart();
+  const submit = useSubmit();
 
   return (
     <div className="grid h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -123,6 +121,15 @@ export default function AppLayout() {
                   method="post"
                   id="logout-form"
                   action="/api/auth/logout"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+
+                    clearCart();
+                    submit(null, {
+                      method: "post",
+                      action: "/api/auth/logout",
+                    });
+                  }}
                 />
                 <button type="submit" form="logout-form">
                   Logout
