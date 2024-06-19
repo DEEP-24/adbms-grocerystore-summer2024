@@ -9,7 +9,7 @@ import {
   clsx,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import type { Product } from "@prisma/client";
+import { Category, type Product } from "@prisma/client";
 import type { ActionFunction, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
@@ -119,6 +119,9 @@ export default function ManageProducts() {
   const [isModalOpen, handleModal] = useDisclosure(false);
   const [imageUrl, setImageUrl] = React.useState<string>();
 
+  const [isReturnable, setIsReturnable] = React.useState<
+    "true" | "false" | null
+  >(null);
   const isSubmitting = fetcher.state !== "idle";
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -370,7 +373,11 @@ export default function ManageProducts() {
               <Select
                 name="isReturnable"
                 label="Is returnable"
-                defaultValue={selectedProduct?.isReturnable.toString()}
+                readOnly
+                value={isReturnable ?? undefined}
+                onChange={(value) =>
+                  setIsReturnable((value as "true" | "false") ?? null)
+                }
                 error={fetcher.data?.fieldErrors?.isReturnable}
                 data={[
                   { label: "Yes", value: "true" },
@@ -424,6 +431,17 @@ export default function ManageProducts() {
               defaultValue={selectedProduct?.category.id}
               placeholder="Select category"
               searchable={true}
+              onChange={(value) => {
+                const category = categories.find(
+                  (category) => category.id === value,
+                );
+
+                if (!category) {
+                  return;
+                }
+
+                setIsReturnable(category.isReturnable ? "true" : "false");
+              }}
               error={fetcher.data?.fieldErrors?.category}
             />
 
