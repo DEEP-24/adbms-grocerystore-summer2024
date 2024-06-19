@@ -19,7 +19,12 @@ import {
   getAllCategoriesWithProducts,
   getAllProducts,
 } from "~/lib/product.server";
-import { isAdmin, isCustomer, requireUserId } from "~/lib/session.server";
+import {
+  isAdmin,
+  isCustomer,
+  logout,
+  requireUserId,
+} from "~/lib/session.server";
 import { cn } from "~/lib/utils";
 import { useOptionalUser } from "~/utils/hooks";
 
@@ -115,9 +120,9 @@ export default function AppLayout() {
               <DropdownMenuItem>
                 <Form
                   replace={true}
-                  action="/api/auth/logout"
                   method="post"
                   id="logout-form"
+                  action="/api/auth/logout"
                 />
                 <button type="submit" form="logout-form">
                   Logout

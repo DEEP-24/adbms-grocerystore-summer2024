@@ -31,29 +31,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     defaultValue: [],
   });
 
-  // React.useEffect(() => {
-  //   if (user) {
-  //     Cookies.set("storageKey", storageKey, { expires: 7 });
-  //   }
-  // }, [user, storageKey]);
-
-  // React.useEffect(() => {
-  //   const key = Cookies.get("storageKey");
-  //   if (key) {
-  //     const storedItems = localStorage.getItem(key);
-  //     if (storedItems) {
-  //       setItems(JSON.parse(storedItems));
-  //     }
-  //   }
-  // }, [setItems]);
-
-  // React.useEffect(() => {
-  //   const key = Cookies.get("storageKey");
-  //   if (key) {
-  //     localStorage.setItem(key, JSON.stringify(items));
-  //   }
-  // }, [items]);
-
   const priceBeforeTax = items.reduce(
     (acc, item) => acc + item.basePrice * item.quantity,
     0,

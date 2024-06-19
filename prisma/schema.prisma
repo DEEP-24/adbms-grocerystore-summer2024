@@ -73,8 +73,9 @@ model Product {
 }
 
 model Category {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  name         String  @unique
+  isReturnable Boolean @default(true)
 
   products Product[]
 

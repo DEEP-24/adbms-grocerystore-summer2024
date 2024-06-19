@@ -1,5 +1,5 @@
 import { PlusIcon } from "@heroicons/react/24/solid";
-import { Button, Modal, TextInput, clsx } from "@mantine/core";
+import { Button, Modal, Select, TextInput, clsx } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import type { Product } from "@prisma/client";
 import type { ActionFunction, LoaderArgs } from "@remix-run/node";
@@ -23,6 +23,7 @@ enum MODE {
 const ManageCategorySchema = z.object({
   categoryId: z.string().optional(),
   name: z.string().min(1, "Name is required"),
+  isReturnable: z.string().min(1, "Returnable is required"),
 });
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -50,7 +51,7 @@ export const action: ActionFunction = async ({ request }) => {
     return badRequest<ActionData>({ success: false, fieldErrors });
   }
 
-  const { categoryId, name } = fields;
+  const { categoryId, name, isReturnable } = fields;
   const id = new ObjectId();
 
   await db.category.upsert({
@@ -59,10 +60,12 @@ export const action: ActionFunction = async ({ request }) => {
     },
     update: {
       name,
+      isReturnable: isReturnable === "true",
     },
     create: {
       id: categoryId || id.toString(),
       name,
+      isReturnable: isReturnable === "true",
     },
   });
 
@@ -178,6 +181,12 @@ export default function ManageProducts() {
                     >
                       Name
                     </th>
+                    <th
+                      scope="col"
+                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 md:pl-0"
+                    >
+                      Returnable
+                    </th>
 
                     <th
                       scope="col"
@@ -192,6 +201,9 @@ export default function ManageProducts() {
                     <tr key={category.id}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 md:pl-0">
                         {category.name}
+                      </td>
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 md:pl-0">
+                        {category.isReturnable ? "Yes" : "No"}
                       </td>
 
                       <td className="relative space-x-4 whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6 md:pr-0">
@@ -247,6 +259,18 @@ export default function ManageProducts() {
               label="Name"
               defaultValue={selectedCategory?.name}
               error={fetcher.data?.fieldErrors?.name}
+              required={true}
+            />
+
+            <Select
+              name="isReturnable"
+              label="Is returnable"
+              defaultValue={selectedCategory?.isReturnable.toString()}
+              error={fetcher.data?.fieldErrors?.isReturnable}
+              data={[
+                { label: "Yes", value: "true" },
+                { label: "No", value: "false" },
+              ]}
               required={true}
             />
 
